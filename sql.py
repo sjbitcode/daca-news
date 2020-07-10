@@ -1,3 +1,5 @@
+ENABLE_FOREIGN_KEYS = 'PRAGMA foreign_keys = ON;'
+
 SQL_CREATE_ARTICLES_TABLE = (
     'CREATE TABLE IF NOT EXISTS articles ('
     'id integer PRIMARY KEY, '

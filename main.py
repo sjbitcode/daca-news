@@ -6,6 +6,7 @@ from newsapi import NewsApiClient
 
 from sources import source_ids
 from sql import (
+    ENABLE_FOREIGN_KEYS,
     INSERT_INTO_ARTICLES_TABLE,
     SQL_CREATE_ARTICLES_TABLE
 )
@@ -26,6 +27,7 @@ everything = newsapi.get_everything(
 
 # Establish db connection and insert articles.
 conn = sqlite3.connect('daca_news.db')
+conn.execute(ENABLE_FOREIGN_KEYS)
 conn.execute(SQL_CREATE_ARTICLES_TABLE)
 
 with conn:
