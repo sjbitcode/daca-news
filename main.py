@@ -20,7 +20,7 @@ everything = newsapi.get_everything(
     sources=','.join(source_ids),
     sort_by='relevancy',
     from_param=(datetime.date.today() -
-                datetime.timedelta(days=1)).strftime('%Y-%m-%d'),
+                datetime.timedelta(days=10)).strftime('%Y-%m-%d'),
     to=datetime.date.today().strftime('%Y-%m-%d')
 )
 
@@ -34,6 +34,8 @@ with conn:
         # Make source info as attributes on top level of dict.
         article['source_id'] = article['source']['id']
         article['source_name'] = article['source']['name']
+        article['created_at'] = datetime.datetime.utcnow().strftime(
+            '%Y-%m-%dT%H:%M:%SZ')
 
         try:
             conn.execute(INSERT_INTO_ARTICLES_TABLE, article)
