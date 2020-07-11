@@ -1,3 +1,6 @@
+import sqlite3
+
+
 ENABLE_FOREIGN_KEYS = 'PRAGMA foreign_keys = ON;'
 
 SQL_CREATE_ARTICLES_TABLE = (
@@ -17,7 +20,55 @@ SQL_CREATE_ARTICLES_TABLE = (
     ');'
 )
 
+SQL_CREATE_DIGEST_TABLE = (
+    'CREATE TABLE IF NOT EXISTS digest ('
+    'id integer PRIMARY KEY, '
+    'sent_at TEXT'
+    ');'
+)
+
+SQL_CREATE_RECIPIENT_TABLE = (
+    'CREATE TABLE IF NOT EXISTS recipient ('
+    'id integer PRIMARY KEY, '
+    'name TEXT, '
+    'email TEXT, '
+    'UNIQUE(email)'
+    ');'
+)
+
+SQL_CREATE_ARTICLES_DIGEST_THROUGH_TABLE = (
+    'CREATE TABLE IF NOT EXISTS articles_digest ('
+    'article_id INTEGER NOT NULL, '
+    'digest_id INTEGER NOT NULL, '
+    'FOREIGN KEY(article_id) REFERENCES articles(id), '
+    'FOREIGN KEY(digest_id) REFERENCES digest(id)'
+    ');'
+)
+
+SQL_CREATE_ARTICLES_RECIPIENT_THROUGH_TABLE = (
+    'CREATE TABLE IF NOT EXISTS articles_recipient ('
+    'article_id INTEGER NOT NULL, '
+    'recipient_id INTEGER NOT NULL, '
+    'FOREIGN KEY(article_id) REFERENCES articles(id), '
+    'FOREIGN KEY(recipient_id) REFERENCES recipient(id)'
+    ');'
+)
+
 INSERT_INTO_ARTICLES_TABLE = (
     'INSERT INTO articles (source_id, source_name, author, title, description, url, image_url, published_at, content, created_at) '
     'VALUES (:source_id, :source_name, :author, :title, :description, :url, :urlToImage, :publishedAt, :content, :created_at)'
 )
+
+
+def initialize_db():
+    sql_setup = (
+        f"{ENABLE_FOREIGN_KEYS} "
+        f"{SQL_CREATE_ARTICLES_TABLE} "
+        f"{SQL_CREATE_DIGEST_TABLE} "
+        f"{SQL_CREATE_RECIPIENT_TABLE} "
+        f"{SQL_CREATE_ARTICLES_DIGEST_THROUGH_TABLE} "
+        f"{SQL_CREATE_ARTICLES_RECIPIENT_THROUGH_TABLE}"
+    )
+    conn = sqlite3.connect('daca_news.db')
+    conn.executescript(sql_setup)
+    return conn
