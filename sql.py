@@ -70,5 +70,6 @@ def initialize_db():
         f"{SQL_CREATE_ARTICLES_RECIPIENT_THROUGH_TABLE}"
     )
     conn = sqlite3.connect('daca_news.db')
+    conn.row_factory = sqlite3.Row
     conn.executescript(sql_setup)
     return conn
