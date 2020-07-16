@@ -47,8 +47,8 @@ SQL_CREATE_ARTICLES_DIGEST_THROUGH_TABLE = (
 )
 
 SQL_CREATE_ARTICLES_RECIPIENT_THROUGH_TABLE = (
-    'id integer PRIMARY KEY, '
     'CREATE TABLE IF NOT EXISTS articles_recipient ('
+    'id integer PRIMARY KEY, '
     'article_id INTEGER NOT NULL, '
     'recipient_id INTEGER NOT NULL, '
     'FOREIGN KEY(article_id) REFERENCES articles(id), '
