@@ -31,8 +31,6 @@ with conn:
         # Make source info as attributes on top level of dict.
         article['source_id'] = article['source']['id']
         article['source_name'] = article['source']['name']
-        article['created_at'] = datetime.datetime.utcnow().strftime(
-            '%Y-%m-%dT%H:%M:%SZ')
 
         try:
             conn.execute(sql.INSERT_INTO_ARTICLES_TABLE, article)

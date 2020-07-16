@@ -38,6 +38,7 @@ SQL_CREATE_RECIPIENT_TABLE = (
 
 SQL_CREATE_ARTICLES_DIGEST_THROUGH_TABLE = (
     'CREATE TABLE IF NOT EXISTS articles_digest ('
+    'id integer PRIMARY KEY, '
     'article_id INTEGER NOT NULL, '
     'digest_id INTEGER NOT NULL, '
     'FOREIGN KEY(article_id) REFERENCES articles(id), '
@@ -46,6 +47,7 @@ SQL_CREATE_ARTICLES_DIGEST_THROUGH_TABLE = (
 )
 
 SQL_CREATE_ARTICLES_RECIPIENT_THROUGH_TABLE = (
+    'id integer PRIMARY KEY, '
     'CREATE TABLE IF NOT EXISTS articles_recipient ('
     'article_id INTEGER NOT NULL, '
     'recipient_id INTEGER NOT NULL, '
@@ -56,7 +58,7 @@ SQL_CREATE_ARTICLES_RECIPIENT_THROUGH_TABLE = (
 
 INSERT_INTO_ARTICLES_TABLE = (
     'INSERT INTO articles (source_id, source_name, author, title, description, url, image_url, published_at, content, created_at) '
-    'VALUES (:source_id, :source_name, :author, :title, :description, :url, :urlToImage, :publishedAt, :content, :created_at)'
+    'VALUES (:source_id, :source_name, :author, :title, :description, :url, :urlToImage, :publishedAt, :content, strftime("%Y-%m-%dT%H:%M:%SZ"))'
 )
 
 
