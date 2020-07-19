@@ -58,7 +58,7 @@ SQL_CREATE_ARTICLES_RECIPIENT_THROUGH_TABLE = (
 
 INSERT_INTO_ARTICLES_TABLE = (
     'INSERT INTO articles (source_id, source_name, author, title, description, url, image_url, published_at, content, created_at) '
-    'VALUES (:source_id, :source_name, :author, :title, :description, :url, :urlToImage, :publishedAt, :content, strftime("%Y-%m-%dT%H:%M:%SZ"))'
+    'VALUES (:source_id, :source_name, :author, :title, :description, :url, :urlToImage, :publishedAt_dt, :content, datetime("now"))'
 )
 
 
