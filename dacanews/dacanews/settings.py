@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'articles',
+    'huey.contrib.djhuey',
 ]
 
 MIDDLEWARE = [
@@ -119,3 +120,29 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
 
 STATIC_URL = '/static/'
+
+HUEY = {
+    'huey_class': 'huey.SqliteHuey',
+    'name': 'my-app',
+    'results': True,
+    # To run Huey in "immediate" mode with a live storage API, specify
+    # immediate_use_memory=False.
+    # 'immediate_use_memory': False,
+
+    # OR:
+    # To run Huey in "live" mode regardless of whether DEBUG is enabled,
+    # specify immediate=False.
+    'immediate': False,
+
+    # 'consumer': {
+    #     'workers': 1,
+    #     'worker_type': 'thread',
+    #     'initial_delay': 0.1,  # Smallest polling interval, same as -d.
+    #     'backoff': 1.15,  # Exponential backoff using this rate, -b.
+    #     'max_delay': 10.0,  # Max possible polling interval, -m.
+    #     'scheduler_interval': 1,  # Check schedule every second, -s.
+    #     'periodic': True,  # Enable crontab feature.
+    #     'check_worker_health': True,  # Enable worker health checks.
+    #     'health_check_interval': 1,  # Check worker health every second.
+    # },
+}
