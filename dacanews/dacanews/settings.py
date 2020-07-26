@@ -124,7 +124,7 @@ STATIC_URL = '/static/'
 HUEY = {
     'huey_class': 'huey.SqliteHuey',
     'name': 'my-app',
-    'results': True,
+    # 'results': True,
     # To run Huey in "immediate" mode with a live storage API, specify
     # immediate_use_memory=False.
     # 'immediate_use_memory': False,
