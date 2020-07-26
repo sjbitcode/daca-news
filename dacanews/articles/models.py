@@ -18,10 +18,10 @@ class Article(models.Model):
 
 class Source(models.Model):
     name = models.CharField(max_length=100, unique=True)
-    name_slug = models.CharField(max_length=50, unique=True)
+    slug = models.CharField(max_length=50, unique=True)
 
     def __str__(self):
-        return self.name_slug
+        return f'Source {self.slug} {self.id}'
 
 
 class Digest(models.Model):
