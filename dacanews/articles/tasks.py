@@ -22,19 +22,7 @@ source_ids = [
     'the-washington-times', 'time', 'usa-today', 'wired'
 ]
 
-# @periodic_task(crontab(minute='*/1'))
-# def say_hello():
-#     print('Hello, this is a task')
 
-
-# @db_periodic_task(crontab(minute='*/1'))
-# def every_five_mins():
-#     rand_str = str(uuid.uuid1())[:5]
-#     s = Source(name=f'Some source {rand_str}', name_slug=f'source-{rand_str}')
-#     s.save()
-
-# make this periodic!
-@db_task()
 def fetch_and_store_articles():
     try:
         response = newsapi.get_everything(
@@ -81,3 +69,8 @@ def fetch_and_store_articles():
 
     except Exception as e:
         print(str(e))
+
+
+@db_periodic_task(crontab(minute='*/5', hour='0,12'))
+def perform_fetch_and_store_articles():
+    fetch_and_store_articles()
