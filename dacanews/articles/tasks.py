@@ -39,9 +39,11 @@ def fetch_and_store_articles():
 
         with transaction.atomic():
             print('Get or create sources')
-            unique_source_ids = {article['source']['id']: {'name': article['source']['name']} for article in response['articles']}
+            unique_source_ids = {article['source']['id']: {
+                'name': article['source']['name']} for article in response['articles']}
             for source in unique_source_ids.items():
-                source_obj, source_created = Source.objects.get_or_create(slug=source[0], name=source[1]['name'])
+                source_obj, source_created = Source.objects.get_or_create(
+                    slug=source[0], name=source[1]['name'])
                 source[1]['id'] = source_obj.id
                 print(source)
                 print(source_obj.id)
@@ -57,7 +59,7 @@ def fetch_and_store_articles():
                     defaults={
                         'source_id': article_source_id,
                         'title': article['title'],
-                        'author': article['author'],
+                        'author': article['author'] or '',
                         'content': article['content'] or '',
                         'description': article['description'] or '',
                         'image_url': article['urlToImage'] or '',
@@ -71,6 +73,6 @@ def fetch_and_store_articles():
         print(str(e))
 
 
-@db_periodic_task(crontab(minute='*/5', hour='0,12'))
+@db_periodic_task(crontab(minute='*/60', hour='0,12'))
 def perform_fetch_and_store_articles():
     fetch_and_store_articles()
