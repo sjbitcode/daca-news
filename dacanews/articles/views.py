@@ -1,6 +1,11 @@
 from django.http import HttpResponse
 from django.shortcuts import render
+from django.template import loader
 
-# Create your views here.
+from .models import Article
+
+
 def index(request):
-    return HttpResponse('Hello world, articles index view here!')
+    articles = Article.objects.order_by('published_at')[:10]
+    context = {'articles': articles, }
+    return render(request, 'articles/index.html', context)
