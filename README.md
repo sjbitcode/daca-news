@@ -1,1 +1,1 @@
-## Simple DACA news scraper
+## DACA news scraper
