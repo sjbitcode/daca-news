@@ -1,17 +1,12 @@
 import datetime
 import os
 import pytz
-import uuid
 
+from django.core.management.base import BaseCommand, CommandError
 from django.db import transaction
-from huey import crontab
-from huey.contrib.djhuey import (
-    db_periodic_task, db_task,
-    periodic_task, task
-)
 from newsapi import NewsApiClient
 
-from .models import Article, Source
+from articles.models import Article, Source
 
 
 newsapi = NewsApiClient(api_key=os.environ.get('NEWSAPI_KEY'))
@@ -30,9 +25,9 @@ def fetch_and_store_articles():
             language='en',
             # sources=','.join(source_ids),
             sort_by='relevancy',
-            from_param='2020-09-15',
-            # from_param=(datetime.date.today() -
-            #             datetime.timedelta(days=2)).strftime('%Y-%m-%d'),
+            # from_param='2020-09-15',
+            from_param=(datetime.date.today() -
+                        datetime.timedelta(days=2)).strftime('%Y-%m-%d'),
             to=datetime.date.today().strftime('%Y-%m-%d')
         )
 
@@ -41,14 +36,10 @@ def fetch_and_store_articles():
         with transaction.atomic():
             print('Get or create sources')
 
-            # NEED TO REDO! Sometimes the id is empty for sources not stored
-            # unique_source_ids = {article['source']['id']: {
-            #     'name': article['source']['name']} for article in response['articles']}
-
             unique_source_names = {
                 # the id is sometimes none, but name always populated.
                 article['source']['name']: {
-                    'slug': article['source'].get('id', ''),
+                    'slug': article['source'].get('id') or article['source']['name'].lower().replace(' ', '-'),
                     'id': None
                 }
                 for article in response['articles']
@@ -85,6 +76,8 @@ def fetch_and_store_articles():
         print(str(e))
 
 
-# @db_periodic_task(crontab(minute='*/60', hour='0,12'))
-# def perform_fetch_and_store_articles():
-#     fetch_and_store_articles()
+class Command(BaseCommand):
+    help = 'Fetch articles from NewsAPI'
+
+    def handle(self, *args, **options):
+        fetch_and_store_articles()

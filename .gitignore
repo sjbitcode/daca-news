@@ -141,3 +141,4 @@ cython_debug/
 set_env.sh
 *.db*
 demo.py
+misc

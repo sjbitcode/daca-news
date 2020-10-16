@@ -3,10 +3,9 @@ from django.db import models
 
 # Create your models here.
 class Article(models.Model):
-    source = models.ForeignKey('Source', on_delete=models.CASCADE, max_length=100)
+    source = models.ForeignKey('Source', on_delete=models.CASCADE, max_length=100, blank=True)
     author = models.CharField(max_length=100, blank=True)
     title = models.CharField(max_length=200)
-    content = models.CharField(max_length=200, blank=True)
     description = models.TextField(blank=True)
     url = models.URLField(unique=True)
     image_url = models.URLField(blank=True)
@@ -19,7 +18,7 @@ class Article(models.Model):
 
 class Source(models.Model):
     name = models.CharField(max_length=100, unique=True)
-    slug = models.CharField(max_length=50, unique=True)
+    slug = models.CharField(max_length=50, unique=True, blank=True)
 
     def __str__(self):
         return f'Source {self.slug} {self.id}'
