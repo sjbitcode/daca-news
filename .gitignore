@@ -142,3 +142,4 @@ set_env.sh
 *.db*
 demo.py
 misc
+.vscode

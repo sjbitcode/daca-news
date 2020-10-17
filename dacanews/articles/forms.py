@@ -36,7 +36,7 @@ class SourceForm(forms.ModelForm):
         fields = '__all__'
 
     def clean(self):
-        cleaned_data = super(SourceForm, self).clean()
+        cleaned_data = super().clean()
         name = cleaned_data['name']
         slug = cleaned_data['slug']
 

@@ -40,14 +40,26 @@ subscription_key = os.environ.get('BING_SUBSCRIPTION_KEY')
 search_term = "daca"
 search_url = os.path.join(os.environ.get('BING_PROJECT_ENDPOINT'), 'bing/v7.0/news/search')
 headers = {"Ocp-Apim-Subscription-Key": subscription_key}
+# params = {
+#     "q": search_term,
+#     "textDecorations": True,
+#     "textFormat": "HTML",
+#     "mkt": "en-US",
+#     "category": "Politics",
+#     "count": 40,
+#     # "offset": 100,
+#     # "freshness": "Month",
+#     # "since": 1577836800,
+#     "sortBy": "Date"
+# }
+
 params = {
     "q": search_term,
-    "textDecorations": True,
     "textFormat": "HTML",
     "mkt": "en-US",
-    "category": "Politics",
-    "count": 10,
-    # "offset": 40
+    # "category": "Politics",
+    "count": 40,
+    "offset": 160,
     # "freshness": "Month",
     # "since": 1577836800,
     "sortBy": "Date"
@@ -64,7 +76,14 @@ def fetch_and_store_articles():
             print(article['name'])
             print(article['datePublished'])
             print(article['provider'])
+            print(article['url'])
             print('---')
+
+        print(f'{len(results["value"])} ARTICLES FOUND')
+        print(f'api call url - {response.request.url}')
+
+        # import pdb
+        # pdb.set_trace()
 
         with open(f'bing_results_{datetime.datetime.now()}.json', 'w') as outfile:
             json.dump(results, outfile)

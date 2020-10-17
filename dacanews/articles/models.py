@@ -11,6 +11,7 @@ class Article(models.Model):
     image_url = models.URLField(blank=True)
     published_at = models.DateTimeField()
     created_at = models.DateTimeField(auto_now_add=True)
+    public = models.BooleanField(default=False)
 
     def __str__(self):
         return f'Article [title - {self.title[:20]}, source - {self.source_id}]'
@@ -22,6 +23,16 @@ class Source(models.Model):
 
     def __str__(self):
         return f'Source {self.slug} {self.id}'
+
+
+class APIReponse(models.Model):
+    source = models.CharField(max_length=20, blank=True)
+    response = models.JSONField(null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    url = models.URLField(blank=True)
+
+    def __str__(self):
+        return f'APIResponse [source - {self.source}, created - {self.created_at}]'
 
 
 class Digest(models.Model):

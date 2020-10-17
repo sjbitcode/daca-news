@@ -33,6 +33,9 @@ def fetch_and_store_articles():
 
         print(f"Found {response['totalResults']} articles")
 
+        import pdb
+        pdb.set_trace()
+
         with transaction.atomic():
             print('Get or create sources')
 
