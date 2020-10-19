@@ -4,7 +4,7 @@ from django import forms
 from django.template.defaultfilters import slugify
 from django.utils.html import strip_tags
 
-from .models import Article, Source
+from .models import ApiResponse, Article, Source
 
 
 # class MLStripper(html.parser.HTMLParser):
@@ -62,3 +62,9 @@ class ArticleForm(forms.ModelForm):
     def clean_description(self):
         description = self.cleaned_data['description']
         return strip_tags_and_format(description)
+
+
+class ApiResponseForm(forms.ModelForm):
+    class Meta:
+        model = ApiResponse
+        exclude = ['created_at']

@@ -82,9 +82,6 @@ def fetch_and_store_articles():
         print(f'{len(results["value"])} ARTICLES FOUND')
         print(f'api call url - {response.request.url}')
 
-        # import pdb
-        # pdb.set_trace()
-
         with open(f'bing_results_{datetime.datetime.now()}.json', 'w') as outfile:
             json.dump(results, outfile)
 

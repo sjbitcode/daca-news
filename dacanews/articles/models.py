@@ -25,7 +25,7 @@ class Source(models.Model):
         return f'Source {self.slug} {self.id}'
 
 
-class APIReponse(models.Model):
+class ApiResponse(models.Model):
     source = models.CharField(max_length=20, blank=True)
     response = models.JSONField(null=True)
     created_at = models.DateTimeField(auto_now_add=True)
