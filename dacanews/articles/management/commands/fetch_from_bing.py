@@ -1,6 +1,6 @@
 from django.core.management.base import BaseCommand
 
-from .actions import bing_pipeline
+from articles.actions import bing_pipeline
 
 
 class Command(BaseCommand):

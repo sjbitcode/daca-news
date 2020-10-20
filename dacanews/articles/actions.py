@@ -51,7 +51,7 @@ class ArticlePipeline:
         source_form = SourceForm(source_dict)
         if not source_form.is_valid():
             # Insert logging here
-            print(source_form.errors)
+            print(source_form.errors.as_json())
             return
 
         return source_form.save()
@@ -68,7 +68,7 @@ class ArticlePipeline:
 
         if not article_form.is_valid():
             # Insert logging here
-            print(article_form.errors)
+            print(article_form.errors.as_json())
             return
 
         article_form.save()
@@ -82,7 +82,7 @@ class ArticlePipeline:
 
         if not api_resp_form.is_valid():
             # Insert logging here
-            print(api_resp_form.errors)
+            print(api_resp_form.errors.as_json())
             return
 
         api_resp_form.save()
@@ -108,10 +108,9 @@ class ArticlePipeline:
         })
 
 
-if __name__ == '__main__':
-    factory = ClientFactory()
-    news_api_client = factory.get_client('NewsApi')
-    bing_client = factory.get_client('Bing')
+factory = ClientFactory()
+news_api_client = factory.get_client('NewsApi')
+bing_client = factory.get_client('Bing')
 
-    news_api_pipeline = ArticlePipeline(news_api_client)
-    bing_pipeline = ArticlePipeline(bing_client)
+news_api_pipeline = ArticlePipeline(news_api_client)
+bing_pipeline = ArticlePipeline(bing_client)
