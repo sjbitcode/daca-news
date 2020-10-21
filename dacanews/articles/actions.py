@@ -1,9 +1,15 @@
 import datetime
+import logging
 import pytz
 
+import requests
+
 from .clients import ClientFactory
-from .models import Article, Source
+from .exceptions import DacaNewsException
 from .forms import ApiResponseForm, ArticleForm, SourceForm
+from .models import Article, Source
+
+logger = logging.getLogger(__name__)
 
 
 class ArticlePipeline:
@@ -50,8 +56,7 @@ class ArticlePipeline:
         # If source is new, populate and attempt to create from form.
         source_form = SourceForm(source_dict)
         if not source_form.is_valid():
-            # Insert logging here
-            print(source_form.errors.as_json())
+            logger.error(source_form.errors.as_data(), extra=source_dict)
             return
 
         return source_form.save()
@@ -67,8 +72,11 @@ class ArticlePipeline:
         article_form = ArticleForm(article_dict)
 
         if not article_form.is_valid():
-            # Insert logging here
-            print(article_form.errors.as_json())
+            logger.error(article_form.errors.as_data(), extra={
+                'article_title': article_dict.get('title'),
+                'article_url': article_dict.get('url'),
+                'article_author': article_dict.get('author')
+            })
             return
 
         article_form.save()
@@ -81,8 +89,7 @@ class ArticlePipeline:
         api_resp_form = ApiResponseForm(api_resp_dict)
 
         if not api_resp_form.is_valid():
-            # Insert logging here
-            print(api_resp_form.errors.as_json())
+            logger.error(api_resp_form.errors.as_data())
             return
 
         api_resp_form.save()
@@ -92,20 +99,33 @@ class ArticlePipeline:
         Make news_client API call via instance fetch method, then
         validate and store articles, sources, and api response.
         """
-        # Save articles and sources if valid.
-        for article_dict, source_dict in self.news_client.fetch_articles(params=self.params):
+        try:
+            # Save articles and sources if valid.
+            for article_dict, source_dict in self.news_client.fetch_articles(params=self.params):
 
-            if ArticlePipeline.is_new_article(article_dict):
-                source = ArticlePipeline.get_source(source_dict)
-                if source:
-                    ArticlePipeline.create_article(article_dict, source)
+                if ArticlePipeline.is_new_article(article_dict):
+                    source = ArticlePipeline.get_source(source_dict)
+                    if source:
+                        ArticlePipeline.create_article(article_dict, source)
 
-        # Save the API Response.
-        ArticlePipeline.create_api_response({
-            'source': str(self.news_client),
-            'response': self.news_client.response.json(),
-            'url': self.news_client.response.url
-        })
+            # Save the API Response.
+            ArticlePipeline.create_api_response({
+                'source': str(self.news_client),
+                'response': self.news_client.response.json(),
+                'url': self.news_client.response.url
+            })
+
+        except requests.exceptions.RequestException as e:
+            raise DacaNewsException(
+                f'{str(self.news_client)} has an issue fetching articles - '
+                f'{str(e)}'
+            )
+
+        except Exception as e:
+            raise DacaNewsException(
+                f'Article pipeline issue with {str(self.news_client)} - '
+                f'{str(e)}'
+            )
 
 
 factory = ClientFactory()

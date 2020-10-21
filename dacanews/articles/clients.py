@@ -1,8 +1,12 @@
 from abc import ABCMeta, abstractmethod
 import datetime
+import logging
 import os
 import pytz
+
 import requests
+
+logger = logging.getLogger(__name__)
 
 
 class BaseClient(metaclass=ABCMeta):
@@ -78,6 +82,8 @@ class NewsApiClient(BaseClient):
         """
         self._fetch_articles(params=params)  # populates self.response
 
+        logger.info(f"Fetched {len(self.response.json()['articles'])} articles")
+
         for raw_article in self.response.json()['articles']:
             article = {
                 'author': raw_article.get('author', ''),
@@ -138,6 +144,8 @@ class BingClient(BaseClient):
         Yield article and source dicts from each article in self.response.
         """
         self._fetch_articles(params=params)  # populates self.response
+
+        logger.info(f"Fetched {len(self.response.json()['value'])} articles")
 
         for raw_article in self.response.json()['value']:
             article = {

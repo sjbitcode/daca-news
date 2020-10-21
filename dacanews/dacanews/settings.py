@@ -10,7 +10,13 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.0/ref/settings/
 """
 
+import json
+import logging
 import os
+
+from pythonjsonlogger import jsonlogger
+import sentry_sdk
+from sentry_sdk.integrations.django import DjangoIntegration
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -37,8 +43,12 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'articles',
+
+    # Third party apps.
     'huey.contrib.djhuey',
+
+    # Project apps.
+    'articles',
 ]
 
 MIDDLEWARE = [
@@ -145,4 +155,36 @@ HUEY = {
     #     'check_worker_health': True,  # Enable worker health checks.
     #     'health_check_interval': 1,  # Check worker health every second.
     # },
+}
+
+sentry_sdk.init(
+    dsn=os.environ.get('SENTRY_DSN'),
+    integrations=[DjangoIntegration()],
+)
+
+
+LOG_LEVEL = os.getenv('LOG_LEVEL', 'INFO')
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'json': {
+            '()': jsonlogger.JsonFormatter,
+            'fmt': '%(asctime)s | %(levelname)s | %(name)s | %(message)s'
+        },
+    },
+    'handlers': {
+        'console': {
+            'level': LOG_LEVEL,
+            'class': 'logging.StreamHandler',
+            'formatter': 'json'
+        }
+    },
+    'loggers': {
+        # root logger
+        '': {
+            'level': LOG_LEVEL,
+            'handlers': ['console'],
+        }
+    },
 }
