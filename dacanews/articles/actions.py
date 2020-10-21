@@ -13,9 +13,8 @@ logger = logging.getLogger(__name__)
 
 
 class ArticlePipeline:
-    def __init__(self, news_client, params={}):
+    def __init__(self, news_client):
         self.news_client = news_client
-        self.params = params
 
     @staticmethod
     def check_duplicate_article_diff_source_exist(article_dict):
@@ -25,7 +24,8 @@ class ArticlePipeline:
         can have the same name but from a different source.
         """
         title = article_dict.get('title')
-        end_date = datetime.datetime.today().replace(tzinfo=pytz.UTC)
+        end_date = datetime.date.today().replace(tzinfo=pytz.UTC)
+        # end_date = article_dict['published_at'].date()  # for historic lookup
         start_date = end_date - datetime.timedelta(days=15)
 
         return Article.objects.filter(title=title).filter(
@@ -49,14 +49,17 @@ class ArticlePipeline:
         """
         # Check if source exists in db first.
         # Use only name because form validation populates slug if empty.
-        source = Source.objects.filter(name=source_dict.get('name')).first()
+        source = Source.objects.filter(name__iexact=source_dict.get('name')).first()
         if source:
             return source
 
         # If source is new, populate and attempt to create from form.
         source_form = SourceForm(source_dict)
         if not source_form.is_valid():
-            logger.error(source_form.errors.as_data(), extra=source_dict)
+            logger.error(source_form.errors.as_data(), extra={
+                'source_name': source_dict.get('name'),
+                'source_slug': source_dict.get('slug')
+            })
             return
 
         return source_form.save()
@@ -75,7 +78,8 @@ class ArticlePipeline:
             logger.error(article_form.errors.as_data(), extra={
                 'article_title': article_dict.get('title'),
                 'article_url': article_dict.get('url'),
-                'article_author': article_dict.get('author')
+                'article_author': article_dict.get('author'),
+                'article_pub_date': article_dict.get('published_at')
             })
             return
 
@@ -94,14 +98,14 @@ class ArticlePipeline:
 
         api_resp_form.save()
 
-    def fetch_and_save_articles(self):
+    def fetch_and_save_articles(self, params={}):
         """
         Make news_client API call via instance fetch method, then
         validate and store articles, sources, and api response.
         """
         try:
             # Save articles and sources if valid.
-            for article_dict, source_dict in self.news_client.fetch_articles(params=self.params):
+            for article_dict, source_dict in self.news_client.fetch_articles(params=params):
 
                 if ArticlePipeline.is_new_article(article_dict):
                     source = ArticlePipeline.get_source(source_dict)

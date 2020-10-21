@@ -15,12 +15,23 @@ class BaseClient(metaclass=ABCMeta):
         self.api_key = None
         self.headers = {}
         self.response: requests.Response = None
+        self.datetime_format_str = None
 
     @property
     def response_url(self):
         if not self.response:
             raise Exception('No response stored')
         return self.response.url
+
+    def get_datetime(self, datetime_str):
+        return datetime.datetime.strptime(
+            datetime_str, self.datetime_format_str
+        ).replace(tzinfo=pytz.utc)
+
+    def get_date(self, datetime_str):
+        return datetime.datetime.strptime(
+            datetime_str, self.datetime_format_str
+        ).replace(tzinfo=pytz.utc).date()
 
     @abstractmethod
     def _fetch_articles(self, params={}):
@@ -48,6 +59,7 @@ class NewsApiClient(BaseClient):
         self.base_url = 'https://newsapi.org/v2/'
         self.api_key = os.path.join(os.environ.get('NEWSAPI_KEY'))
         self.headers['X-Api-Key'] = self.api_key
+        self.datetime_format_str = '%Y-%m-%dT%H:%M:%SZ'
 
     def __str__(self):
         return 'NewsAPI'
@@ -113,6 +125,7 @@ class BingClient(BaseClient):
         )
         self.api_key = os.environ.get('BING_SUBSCRIPTION_KEY')
         self.headers['Ocp-Apim-Subscription-Key'] = self.api_key
+        self.datetime_format_str = '%Y-%m-%dT%H:%M:%S.0000000Z'
 
     def __str__(self):
         return 'Bing'
