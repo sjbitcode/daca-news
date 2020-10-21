@@ -35,6 +35,10 @@ class SourceForm(forms.ModelForm):
         model = Source
         fields = '__all__'
 
+    def clean_name(self):
+        name = self.cleaned_data['name']
+        return name.lower()
+
     def clean(self):
         cleaned_data = super().clean()
         name = cleaned_data['name']

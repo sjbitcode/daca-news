@@ -4,10 +4,10 @@ from django.db import models
 # Create your models here.
 class Article(models.Model):
     source = models.ForeignKey('Source', on_delete=models.CASCADE, max_length=100, blank=True)
-    author = models.CharField(max_length=200, blank=True)
-    title = models.CharField(max_length=200)
+    author = models.CharField(max_length=500, blank=True)
+    title = models.CharField(max_length=500)
     description = models.TextField(blank=True)
-    url = models.URLField(unique=True)
+    url = models.URLField(max_length=500, unique=True)
     image_url = models.URLField(blank=True)
     published_at = models.DateTimeField()
     created_at = models.DateTimeField(auto_now_add=True)
