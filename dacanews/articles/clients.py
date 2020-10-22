@@ -13,7 +13,7 @@ class BaseClient(metaclass=ABCMeta):
     def __init__(self):
         self.base_url = None
         self.api_key = None
-        self.headers = {}
+        # self.headers = {}
         self.response: requests.Response = None
         self.datetime_format_str = None
 
@@ -32,6 +32,15 @@ class BaseClient(metaclass=ABCMeta):
         return datetime.datetime.strptime(
             datetime_str, self.datetime_format_str
         ).replace(tzinfo=pytz.utc).date()
+
+    @abstractmethod
+    def headers(self):
+        """
+        This method should return a dictionary with any
+        necessary header values needed. If not, just
+        return an empty dict.
+        """
+        pass
 
     @abstractmethod
     def _fetch_articles(self, params={}):
@@ -58,7 +67,6 @@ class NewsApiClient(BaseClient):
         super().__init__()
         self.base_url = 'https://newsapi.org/v2/'
         self.api_key = os.path.join(os.environ.get('NEWSAPI_KEY'))
-        self.headers['X-Api-Key'] = self.api_key
         self.datetime_format_str = '%Y-%m-%dT%H:%M:%SZ'
 
     def __str__(self):
@@ -66,6 +74,10 @@ class NewsApiClient(BaseClient):
 
     def __repr__(self):
         return 'NewsApiClient()'
+
+    @property
+    def headers(self):
+        return {'X-Api-Key': self.api_key}
 
     def _fetch_articles(self, params={}):
         """
@@ -124,7 +136,6 @@ class BingClient(BaseClient):
             'bing/v7.0/'
         )
         self.api_key = os.environ.get('BING_SUBSCRIPTION_KEY')
-        self.headers['Ocp-Apim-Subscription-Key'] = self.api_key
         self.datetime_format_str = '%Y-%m-%dT%H:%M:%S.0000000Z'
 
     def __str__(self):
@@ -132,6 +143,9 @@ class BingClient(BaseClient):
 
     def __repr__(self):
         return 'BingClient()'
+
+    def headers(self):
+        return {'Ocp-Apim-Subscription-Key': self.api_key}
 
     def _fetch_articles(self, params={}):
         """

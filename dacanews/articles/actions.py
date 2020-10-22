@@ -6,7 +6,7 @@ import requests
 
 from .clients import ClientFactory
 from .exceptions import DacaNewsException
-from .forms import ApiResponseForm, ArticleForm, SourceForm
+from .forms import ApiResponseForm, ArticleForm, SourceForm, strip_tags_and_format
 from .models import Article, Source
 
 logger = logging.getLogger(__name__)
@@ -20,14 +20,12 @@ class ArticlePipeline:
     def check_duplicate_article_diff_source_exist(article_dict):
         """
         Check if an article with the same title exist between
-        the current date and 15 days back, since an article
+        the publish date and 15 days back, since an article
         can have the same name but from a different source.
         """
-        title = article_dict.get('title')
-        end_date = datetime.date.today().replace(tzinfo=pytz.UTC)
-        # end_date = article_dict['published_at'].date()  # for historic lookup
+        title = strip_tags_and_format(article_dict.get('title'))
+        end_date = article_dict['published_at'] + datetime.timedelta(days=15)
         start_date = end_date - datetime.timedelta(days=15)
-
         return Article.objects.filter(title=title).filter(
             published_at__range=(start_date, end_date)).exists()
 
@@ -107,7 +105,11 @@ class ArticlePipeline:
             # Save articles and sources if valid.
             for article_dict, source_dict in self.news_client.fetch_articles(params=params):
 
-                if ArticlePipeline.is_new_article(article_dict):
+                is_new = ArticlePipeline.is_new_article(article_dict)
+                print(f'\n\nIS ARTICLE NEW --> {is_new}\n\n')
+
+                # if ArticlePipeline.is_new_article(article_dict):
+                if is_new:
                     source = ArticlePipeline.get_source(source_dict)
                     if source:
                         ArticlePipeline.create_article(article_dict, source)

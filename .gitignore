@@ -143,3 +143,4 @@ set_env.sh
 demo.py
 misc
 .vscode
+*sqlite3*
