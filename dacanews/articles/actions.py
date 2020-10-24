@@ -25,7 +25,7 @@ class ArticlePipeline:
         """
         title = strip_tags_and_format(article_dict.get('title'))
         end_date = article_dict['published_at'] + datetime.timedelta(days=15)
-        start_date = end_date - datetime.timedelta(days=15)
+        start_date = article_dict['published_at'] - datetime.timedelta(days=15)
         return Article.objects.filter(title=title).filter(
             published_at__range=(start_date, end_date)).exists()
 
