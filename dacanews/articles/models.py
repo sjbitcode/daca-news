@@ -8,7 +8,7 @@ class Article(models.Model):
     title = models.CharField(max_length=500)
     description = models.TextField(blank=True)
     url = models.URLField(max_length=500, unique=True)
-    image_url = models.URLField(blank=True)
+    image_url = models.URLField(max_length=500, blank=True)
     published_at = models.DateTimeField()
     created_at = models.DateTimeField(auto_now_add=True)
     public = models.BooleanField(default=False)

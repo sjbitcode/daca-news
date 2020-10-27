@@ -108,7 +108,6 @@ class ArticlePipeline:
                 is_new = ArticlePipeline.is_new_article(article_dict)
                 logger.debug(f'New Article Check --> {is_new}')
 
-                # if ArticlePipeline.is_new_article(article_dict):
                 if is_new:
                     source = ArticlePipeline.get_source(source_dict)
                     if source:
