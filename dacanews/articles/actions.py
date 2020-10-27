@@ -1,6 +1,5 @@
 import datetime
 import logging
-import pytz
 
 import requests
 
@@ -47,7 +46,8 @@ class ArticlePipeline:
         """
         # Check if source exists in db first.
         # Use only name because form validation populates slug if empty.
-        source = Source.objects.filter(name__iexact=source_dict.get('name')).first()
+        name = strip_tags_and_format(source_dict.get('name'))
+        source = Source.objects.filter(name__iexact=name).first()
         if source:
             return source
 
@@ -106,7 +106,7 @@ class ArticlePipeline:
             for article_dict, source_dict in self.news_client.fetch_articles(params=params):
 
                 is_new = ArticlePipeline.is_new_article(article_dict)
-                print(f'\n\nIS ARTICLE NEW --> {is_new}\n\n')
+                logger.debug(f'New Article Check --> {is_new}')
 
                 # if ArticlePipeline.is_new_article(article_dict):
                 if is_new:
@@ -137,6 +137,26 @@ class ArticlePipeline:
 factory = ClientFactory()
 news_api_client = factory.get_client('NewsApi')
 bing_client = factory.get_client('Bing')
+
+newsapi_default_params = {
+    'qintitle': 'daca',
+    'language': 'en',
+    'sortBy': 'publishedAt',
+    'pageSize': 100,
+    'page': 1,
+    'from_param': (datetime.date.today() - datetime.timedelta(days=3)).strftime('%Y-%m-%d'),
+    'to': datetime.date.today().strftime('%Y-%m-%d')
+}
+
+bing_default_params = {
+    'q': 'daca',
+    'textFormat': 'HTML',
+    'mkt': 'en-US',
+    'count': 100,
+    'offset': 0,
+    'sortBy': 'Date',
+    'max_pages': 1  # Internal param for pagination
+}
 
 news_api_pipeline = ArticlePipeline(news_api_client)
 bing_pipeline = ArticlePipeline(bing_client)

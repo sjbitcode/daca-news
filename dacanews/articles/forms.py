@@ -37,7 +37,7 @@ class SourceForm(forms.ModelForm):
 
     def clean_name(self):
         name = self.cleaned_data['name']
-        return name.lower()
+        return strip_tags_and_format(name.lower())
 
     def clean(self):
         cleaned_data = super().clean()

@@ -1,16 +1,13 @@
 from abc import ABCMeta, abstractmethod
 import datetime
 import logging
-import math
 import os
-import pdb
 import pytz
-import time
-from urllib import parse
 
 import requests
 
 from .exceptions import DacaNewsException
+from .paginator import NewsApiPaginatorMixin, BingPaginatorMixin
 
 logger = logging.getLogger(__name__)
 
@@ -19,22 +16,35 @@ class BaseClient(metaclass=ABCMeta):
     def __init__(self):
         self.base_url = None
         self.api_key = None
-        # self.headers = {}
         self.response: requests.Response = None
         self.datetime_format_str = None
 
     @property
     def response_url(self):
+        """
+        The url that returned the response, derived
+        from the requests Response object stored as
+        self.response.
+        """
         if not self.response:
-            raise Exception('No response stored')
+            raise DacaNewsException('No response stored')
         return self.response.url
 
-    def get_datetime(self, datetime_str):
+    def _get_datetime(self, datetime_str):
+        """
+        Helper function to return an aware datetime
+        object based off the datetime format the API
+        uses.
+        """
         return datetime.datetime.strptime(
             datetime_str, self.datetime_format_str
         ).replace(tzinfo=pytz.utc)
 
-    def get_date(self, datetime_str):
+    def _get_date(self, datetime_str):
+        """
+        Helper function to return a date object based
+        off the datetime format the API uses.
+        """
         return datetime.datetime.strptime(
             datetime_str, self.datetime_format_str
         ).replace(tzinfo=pytz.utc).date()
@@ -48,6 +58,17 @@ class BaseClient(metaclass=ABCMeta):
         """
         pass
 
+    def make_request(self, url='', params={}):
+        """
+        This method makes a request to a given endpoint with supplied
+        parameters and stored headers (using the requests library)
+        to fetch articles and store the requests Response object as self.response.
+        """
+        self.response = requests.get(url, headers=self.headers,
+                                     params=params)
+        # https://github.com/psf/requests/blob/143150233162d609330941ec2aacde5ed4caa510/requests/models.py#L920
+        self.response.raise_for_status()
+
     @abstractmethod
     def _fetch_articles(self, params={}):
         """
@@ -58,17 +79,28 @@ class BaseClient(metaclass=ABCMeta):
         pass
 
     @abstractmethod
+    def _serialize_articles(self, article_iterable):
+        """
+        This method should yield an article and source dicts
+        for each article from an article iterable returned by the API.
+
+        The article and source dicts should match the fields of
+        forms.ArticleForm and forms.SourceForm, respectively.
+        """
+        pass
+
+    @abstractmethod
     def fetch_articles(self):
         """
-        This method should return an iterable of prepared article
-        and source dicts.
-        Article and source dict keys should match the ArticleForm
-        and SourceForm fields.
+        This method should call the _fetch_articles with any
+        params needed.
+
+        Here you can modify any params before passing to _fetch_articles.
         """
         pass
 
 
-class NewsApiClient(BaseClient):
+class NewsApiClient(BaseClient, NewsApiPaginatorMixin):
     def __init__(self):
         super().__init__()
         self.base_url = 'https://newsapi.org/v2/'
@@ -85,49 +117,28 @@ class NewsApiClient(BaseClient):
     def headers(self):
         return {'X-Api-Key': self.api_key}
 
-    def _fetch_articles(self, params={}):
+    def _fetch_articles(self, params):
         """
         Makes an API call to the 'everything' NewsAPI endpoint with
-        given or default params and stores the request Response object
-        to self.response.
+        given params.
 
         https://newsapi.org/docs/endpoints/everything
         """
         everything_endpoint = os.path.join(self.base_url, 'everything')
-        p = {
-            'qintitle': params.get('qintitle') or 'daca',
-            'language': params.get('language') or 'en',
-            'sortBy': params.get('sortBy') or 'publishedAt',
-            'pageSize': params.get('pageSize') or 100,
-            'page': params.get('page') or 1,
-            'from_param': params.get('from_param') or
-            (datetime.date.today() - datetime.timedelta(days=2)
-             ).strftime('%Y-%m-%d'),
-            'to': params.get('to') or datetime.date.today().strftime('%Y-%m-%d')
-        }
-        self.response = requests.get(everything_endpoint, headers=self.headers,
-                                     params=p)
-        # https://github.com/psf/requests/blob/143150233162d609330941ec2aacde5ed4caa510/requests/models.py#L920
-        self.response.raise_for_status()
+        self.make_request(everything_endpoint, params)
 
-    def fetch_articles(self, params={}):
+    def _serialize_articles(self, article_list):
         """
-        Yield article and source dicts from each article in self.response.
+        Yield article and source dicts from a NewsAPI article list.
         """
-        self._fetch_articles(params=params)  # populates self.response
-
-        logger.info(f"Fetched {len(self.response.json()['articles'])} articles")
-
-        for raw_article in self.response.json()['articles']:
+        for raw_article in article_list:
             article = {
                 'author': raw_article.get('author', ''),
                 'title': raw_article.get('title', ''),
                 'description': raw_article.get('description', ''),
                 'url': raw_article.get('url'),
                 'image_url': raw_article.get('urlToImage', ''),
-                'published_at': datetime.datetime.strptime(
-                    raw_article['publishedAt'], '%Y-%m-%dT%H:%M:%SZ'
-                ).replace(tzinfo=pytz.utc)
+                'published_at': self._get_datetime(raw_article['publishedAt'])
             }
 
             source = {
@@ -137,8 +148,23 @@ class NewsApiClient(BaseClient):
 
             yield article, source
 
+    def fetch_articles(self, params={}):
+        """
+        Fetches articles via pagination.
+        """
+        max_pages = params.pop('max_pages', None)
+        if max_pages == 0:
+            raise DacaNewsException('Max pages has to be > 0')
 
-class BingClient(BaseClient):
+        while True:
+            self._fetch_articles(params=params)
+            yield from self._serialize_articles(self.response.json()['articles'])
+            if not self.continue_pagination(max_pages=max_pages):
+                break
+            params = {**params, **self.get_next_params()}
+
+
+class BingClient(BaseClient, BingPaginatorMixin):
     def __init__(self):
         super().__init__()
         self.base_url = os.path.join(
@@ -158,45 +184,27 @@ class BingClient(BaseClient):
     def headers(self):
         return {'Ocp-Apim-Subscription-Key': self.api_key}
 
-    def _fetch_articles(self, params={}):
+    def _fetch_articles(self, params):
         """
         Makes an API call to the news search Bing endpoint with
-        given or default params and stores the request Response object
-        to self.response.
+        given params.
 
         https://docs.microsoft.com/en-us/rest/api/cognitiveservices-bingsearch/bing-news-api-v7-reference
         """
         news_search_endpoint = os.path.join(self.base_url, 'news/search')
-        p = {
-            'q': params.get('q') or 'daca',
-            'textFormat': params.get('textFormat') or 'HTML',
-            'mkt': params.get('mkt') or 'en-US',
-            'count': params.get('count') or 10,
-            'offset': params.get('offset') or 0,
-            'sortBy': params.get('sortBy') or 'Date',
-        }
-        self.response = requests.get(news_search_endpoint, headers=self.headers, params=p)
-        # https://github.com/psf/requests/blob/143150233162d609330941ec2aacde5ed4caa510/requests/models.py#L920
-        self.response.raise_for_status()
+        self.make_request(url=news_search_endpoint, params=params)
 
-    def fetch_articles(self, params={}):
+    def _serialize_articles(self, article_list):
         """
-        Yield article and source dicts from each article in self.response.
+        Yield article and source dicts from a Bing article list.
         """
-        self._fetch_articles(params=params)  # populates self.response
-
-        logger.info(f"Fetched {len(self.response.json()['value'])} articles")
-
-        for raw_article in self.response.json()['value']:
+        for raw_article in article_list:
             article = {
                 'title': raw_article.get('name', ''),
                 'description': raw_article.get('description', ''),
                 'url': raw_article.get('url', ''),
                 'image_url': raw_article.get('image', {}).get('thumbnail', {}).get('contentUrl', ''),
-                'published_at': datetime.datetime.strptime(
-                    raw_article.get('datePublished'),
-                    '%Y-%m-%dT%H:%M:%S.0000000Z'
-                ).replace(tzinfo=pytz.utc)
+                'published_at': self._get_datetime(raw_article.get('datePublished'))
             }
 
             source = {
@@ -206,110 +214,20 @@ class BingClient(BaseClient):
 
             yield article, source
 
-
-class BasePaginator(metaclass=ABCMeta):
-
-    def get_url_query_param(self, url, value):
-        url_parts = parse.parse_qs(parse.urlparse(url).query)
-        return url_parts.get(value)[0]
-
-    @abstractmethod
-    def page_size(self):
-        pass
-
-    @abstractmethod
-    def total_results(self):
-        pass
-
-    @property
-    def total_pages(self):
-        return math.ceil(self.total_results / self.page_size)
-
-    @abstractmethod
-    def current_page(self):
-        pass
-
-    @abstractmethod
-    def _get_next_params(self):
-        pass
-
-    def continue_pagination(self):
-        print(
-            f'current page {self.current_page}, {type(self.current_page)}, {self.total_pages}, {type(self.total_pages)}')
-        return self.current_page < self.total_pages
-
-    def get_next_params(self):
-        if not self.continue_pagination():
-            raise DacaNewsException('Cannot paginate further')
-        return self._get_next_params()
-
-
-class BingPaginatorMixin(BasePaginator):
-    @property
-    def offset(self):
-        return int(self.get_url_query_param(self.response_url, 'offset'))
-
-    @property
-    def page_size(self):
-        return int(self.get_url_query_param(self.response_url, 'count'))
-
-    @property
-    def total_results(self):
-        return self.response.json()['totalEstimatedMatches']
-
-    @property
-    def current_page(self):
-        # what page are we currently on
-        # offset is 0 based, so we add 1 to mean page 1 was initial
-        return self.offset // self.page_size + 1
-
-    def _get_next_params(self):
-        return {'offset': self.offset + self.page_size}
-
-    def paginate(self, params={}):
+    def fetch_articles(self, params={}):
         """
-        This functionality will have to go in ArticlePipeline class, since it needs to
-        wrap the iterating/saving of articles.
+        Fetches articles via pagination.
         """
-        # Make initial request
-        self._fetch_articles()
+        max_pages = params.pop('max_pages', None)
+        if max_pages == 0:
+            raise DacaNewsException('Max pages has to be > 0')
 
-        # print(f'TOTAL RESULTS -- {self.total_results}')
-        # print(f'TOTAL PAGES -- {self.total_pages}')
-        # print(f'PAGE SIZE -- {self.page_size}')
-        # print(f'CURRENT PAGE -- {self.current_page}')
-        counter = 0
-        while self.continue_pagination():
-            if counter >= 3:
-                print('circuit breaker!!!!!!!!!!!!!!!!!')
+        while True:
+            self._fetch_articles(params=params)
+            yield from self._serialize_articles(self.response.json()['value'])
+            if not self.continue_pagination(max_pages=max_pages):
                 break
-            print(f'TOTAL RESULTS -- {self.total_results}')
-            print(f'TOTAL PAGES -- {self.total_pages}')
-            print(f'PAGE SIZE -- {self.page_size}')
-            print(f'CURRENT PAGE -- {self.current_page}')
-            print(f'NEXT PARAMS -- {self.get_next_params()}')
-            # import pdb
-            pdb.set_trace()
-            self._fetch_articles(params={**params, **self.get_next_params()})
-            counter += 1
-            time.sleep(2)
-
-
-class NewsApiPaginatorMixin(BasePaginator):
-    @property
-    def page_size(self):
-        return int(self.get_url_query_param(self.response_url, 'pageSize'))
-
-    @property
-    def total_results(self):
-        return self.response.json()['totalResults']
-
-    @property
-    def current_page(self):
-        return int(self.get_url_query_param(self.response_url, 'page'))
-
-    def _get_next_params(self):
-        return {'page': self.current_page + 1}
+            params = {**params, **self.get_next_params()}
 
 
 class ClientFactory:
