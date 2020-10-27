@@ -157,10 +157,9 @@ HUEY = {
     # },
 }
 
-sentry_sdk.init(
-    dsn=os.environ.get('SENTRY_DSN'),
-    integrations=[DjangoIntegration()],
-)
+SENTRY_DSN = os.environ.get('SENTRY_DSN')
+if SENTRY_DSN and SENTRY_DSN != 'sentry-key':
+    sentry_sdk.init(dsn=SENTRY_DSN, integrations=[DjangoIntegration()])
 
 
 LOG_LEVEL = os.getenv('LOG_LEVEL', 'INFO')

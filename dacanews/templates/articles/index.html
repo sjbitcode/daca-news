@@ -1,5 +1,10 @@
 {% extends 'base.html' %}
 {% block content %}
+
+<form action="{% url 'index' %}" method="get">
+    <input type="text" name="q" placeholder="Search...">
+</form>
+
 {% if articles %}
 <ul>
     {% for article in articles %}

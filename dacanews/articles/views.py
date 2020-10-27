@@ -1,11 +1,21 @@
-from django.http import HttpResponse
-from django.shortcuts import render
-from django.template import loader
+from django.views.generic import ListView
+from django.db.models import Q
 
 from .models import Article
 
 
-def index(request):
-    articles = Article.objects.order_by('published_at')[:10]
-    context = {'articles': articles, }
-    return render(request, 'articles/index.html', context)
+class ArticleListView(ListView):
+    model = Article
+    template_name = 'articles/index.html'
+    context_object_name = 'articles'
+
+    def get_queryset(self):
+        query = self.request.GET.get('q')
+        article_list = Article.objects.order_by('published_at')[:10]
+        if query:
+            article_list = Article.objects.filter(
+                Q(title__icontains=query) |
+                Q(description__icontains=query) |
+                Q(author__contains=query)
+            )
+        return article_list
