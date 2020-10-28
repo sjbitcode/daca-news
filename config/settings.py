@@ -10,8 +10,6 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.0/ref/settings/
 """
 
-import json
-import logging
 import os
 
 from pythonjsonlogger import jsonlogger
@@ -29,7 +27,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.environ.get('DEBUG', 'False') == 'True'
 
 ALLOWED_HOSTS = []
 
@@ -53,6 +51,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -61,7 +60,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-ROOT_URLCONF = 'dacanews.urls'
+ROOT_URLCONF = 'config.urls'
 
 TEMPLATES = [
     {
@@ -79,7 +78,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'dacanews.wsgi.application'
+WSGI_APPLICATION = 'config.wsgi.application'
 
 
 # Database
@@ -131,9 +130,21 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
+# Collect all the static files here.
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+
+# Additional dirs to include when collecting static files.
+STATICFILES_DIRS = [os.path.join(BASE_DIR, 'staticfiles')]
+
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
+WHITENOISE_KEEP_ONLY_HASHED_FILES = True
+
+
+# Huey Task Runner settings
 HUEY = {
     'huey_class': 'huey.SqliteHuey',
-    'name': 'my-app',
+    'name': 'dacanews-huey',
     # 'results': True,
     # To run Huey in "immediate" mode with a live storage API, specify
     # immediate_use_memory=False.
@@ -157,12 +168,10 @@ HUEY = {
     # },
 }
 
-SENTRY_DSN = os.environ.get('SENTRY_DSN')
-if SENTRY_DSN and SENTRY_DSN != 'sentry-key':
-    sentry_sdk.init(dsn=SENTRY_DSN, integrations=[DjangoIntegration()])
 
-
+# Logging Settings
 LOG_LEVEL = os.getenv('LOG_LEVEL', 'INFO')
+
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
@@ -187,3 +196,10 @@ LOGGING = {
         }
     },
 }
+
+
+# Sentry Settings
+SENTRY_DSN = os.environ.get('SENTRY_DSN')
+
+if SENTRY_DSN and SENTRY_DSN != 'sentry-key':
+    sentry_sdk.init(dsn=SENTRY_DSN, integrations=[DjangoIntegration()])

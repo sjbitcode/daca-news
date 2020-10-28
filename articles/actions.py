@@ -60,6 +60,7 @@ class ArticlePipeline:
             })
             return
 
+        logger.info('Saving Source')
         return source_form.save()
 
     @staticmethod
@@ -81,6 +82,7 @@ class ArticlePipeline:
             })
             return
 
+        logger.info('Saving article')
         article_form.save()
 
     @staticmethod
@@ -106,7 +108,7 @@ class ArticlePipeline:
             for article_dict, source_dict in self.news_client.fetch_articles(params=params):
 
                 is_new = ArticlePipeline.is_new_article(article_dict)
-                logger.debug(f'New Article Check --> {is_new}')
+                logger.info(f'New Article Check --> {is_new}')
 
                 if is_new:
                     source = ArticlePipeline.get_source(source_dict)

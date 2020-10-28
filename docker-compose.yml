@@ -1,0 +1,14 @@
+version: '2'
+services:
+
+  # Dacanews django application
+  dacanews:
+    container_name: dacanews
+    build: .
+    ports:
+      - "8000:8000"
+    volumes:
+        - ${PWD}:/app
+    env_file:
+        - ./dev.env
+

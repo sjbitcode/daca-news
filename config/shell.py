@@ -1,8 +1,6 @@
-import datetime
 import json
 import logging
 import os
-import sqlite3
 
 import django
 
@@ -34,7 +32,7 @@ def dumps(data):
 # -------------------------------------------------------------------
 
 if __name__ == '__main__':
-    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'dacanews.settings')
+    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'config.settings')
     django.setup()
 
     # -------------------------------------------
