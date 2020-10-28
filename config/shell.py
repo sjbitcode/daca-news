@@ -1,6 +1,7 @@
 import json
 import logging
 import os
+import sys
 
 import django
 
@@ -31,7 +32,11 @@ def dumps(data):
 # Main entrypoint.
 # -------------------------------------------------------------------
 
+# The path of the project, relative to this script.
+PROJECT_PATH = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
 if __name__ == '__main__':
+    sys.path.insert(0, PROJECT_PATH)
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'config.settings')
     django.setup()
 
