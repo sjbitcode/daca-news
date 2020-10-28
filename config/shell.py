@@ -46,7 +46,7 @@ if __name__ == '__main__':
 
     # Import django modules.
     from django.conf import settings
-    from django.db.models import Q
+    from django.db.models import Avg, Count, Max, Min, Sum, Q
     from django.utils import timezone
 
     # Import models.
