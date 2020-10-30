@@ -1,0 +1,174 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<!-- Search -->
+<main class="mt-5 md:mt-10">
+    <div class="flex flex-wrap items-center px-4 justify-between" id="searchbar">
+
+        <div class="bg-white flex items-center px-4 rounded shadow cursor-pointer mb-4 w-full">
+            <input class="w-full text-gray-700 leading-tightx focus:outdivne-nonexx" type="text" placeholder="Search">
+            <div class="">
+                <button
+                    class="text-blue-500 hover:text-blue-400 focus:outline-none h-10 flex items-center justify-center">
+                    <svg class="w-5" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        viewBox="0 0 24 24" stroke="currentColor">
+                        <path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                    </svg>
+                </button>
+            </div>
+        </div>
+
+        <ul
+            class="md:block flex flex-wrap md:inline-flex items-center md:justify-between justify-center mb-4 md:text-base text-sm">
+            <li class="">
+                <button class="px-2 text-xs leading-5 font-semibold rounded-full bg-blue-100
+                                text-blue-800 mb-2 mr-2">Fox
+                    News</button>
+            </li>
+            <li class="">
+                <button class="px-2 text-xs leading-5 font-semibold rounded-full bg-blue-100
+                                text-blue-800 mb-2 mr-2">The
+                    Hill</button>
+            </li>
+            <li class="">
+                <button class="px-2 text-xs leading-5 font-semibold rounded-full bg-blue-100
+                                text-blue-800 mb-2 mr-2">NPR</button>
+            </li>
+            <li class="">
+                <button class="px-2 text-xs leading-5 font-semibold rounded-full bg-blue-100
+                                text-blue-800 mb-2 mr-2">MSN</button>
+            </li>
+            <li class="">
+                <button class="px-2 text-xs leading-5 font-semibold rounded-full bg-blue-100
+                                text-blue-800 mb-2 mr-2">Albuquerque
+                    Journal</button>
+            </li>
+            <li class="">
+                <button class="px-2 text-xs leading-5 font-semibold rounded-full bg-blue-100
+                                text-blue-800 mb-2 mr-2">NBC
+                    News</button>
+            </li>
+            <li class="">
+                <button class="px-2 text-xs leading-5 font-semibold rounded-full bg-blue-100
+                                text-blue-800 mb-2 mr-2">Washington
+                    Times</button>
+            </li>
+            <li class="">
+                <button class="px-2 text-xs leading-5 font-semibold rounded-full bg-blue-100
+                                text-blue-800 mb-2 mr-2">CNN</button>
+            </li>
+            <li class="">
+                <button class="px-2 text-xs leading-5 font-semibold rounded-full bg-blue-100
+                                text-blue-800 mb-2 mr-2">Newsweek</button>
+            </li>
+            <li class="">
+                <button class="px-2 text-xs leading-5 font-semibold rounded-full bg-blue-100
+                                text-blue-800 mb-2 mr-2">CBS
+                    News</button>
+            </li>
+        </ul>
+    </div>
+</main>
+<!-- search ends here -->
+
+
+<main class="mt-12 ">
+    <!-- featured section -->
+    <div class="flex flex-wrap md:flex-no-wrap space-x-0 md:space-x-6 mb-16x">
+        <!-- main post -->
+        <div class="mb-4 lg:mb-0 p-4 lg:p-0 w-full md:w-4/7 rounded block">
+            <a href="{{ lead_article.url }}" target="_blank">
+                <img src="{{ lead_article.image_url }}"
+                    class="rounded-md object-cover object-center w-full h-64 shadow-lg">
+            </a>
+            <h1 class="text-gray-800 text-4xl font-bold mt-2 mb-4 leading-tight">
+                <a href="{{ lead_article.url }}" target="_blank">{{ lead_article.title|truncatechars:60 }}</a>
+            </h1>
+            <div class="flex justify-between">
+                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100
+                                text-blue-800 mb-2"> {{ lead_article.source.name }} </span>
+                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-100
+                                text-gray-600 mb-2 py-1x px-4x">
+                    1d </span>
+            </div>
+            <p class="text-gray-600 mb-4 mt-4">
+                {{ lead_article.description |truncatechars:200}}
+            </p>
+        </div>
+
+
+        <!-- sub-main posts -->
+        <div class="w-full md:w-4/7 md:max-w-md p-4 lg:p-0">
+            {% for article in featured_articles %}
+            <div class="rounded w-full flex flex-col md:flex-row mb-10">
+                <a class="h-64 md:h-32 md:w-1/2" href="{{ article.url }}" target="_blank">
+                    <img src="{{ article.image_url }}" class="block md:block lg:block shadow-md rounded-md
+                                md:m-0 object-cover object-center" />
+                </a>
+                <div class="md:w-1/2 bg-white rounded py-4 md:px-4 md:py-0">
+                    <a href="{{ article.url }}" target="_blank">
+                        <div class="md:mt-0 text-gray-800 text-lg mb-2 font-bold text-2xl md:mt-0 md:font-semibold
+                                    md:text-lg">
+                            {{ article.title|truncatechars:60 }}
+                        </div>
+                    </a>
+                    <div class="flex justify-between">
+                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100
+                                text-blue-800 mb-2"> {{ article.source.name }} </span>
+                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-100
+                                text-gray-600 mb-2 py-1x px-4x">
+                            1d </span>
+                    </div>
+                    <p class="block md:hidden p-2 pl-0 pt-1 text-sm text-gray-600">
+                        {{ article.description|truncatechars:200 }}
+                    </p>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+    </div>
+    <!-- end featured section -->
+
+
+    <!-- recent posts -->
+    <div class="flex mt-12x mb-4 px-4 lg:px-0 items-center justify-between">
+        <h2 class="font-bold text-3xl">Latest news</h2>
+        <button class="bg-gray-200 hover:bg-blue-200 text-gray-800 px-3 py-1 rounded cursor-pointer">
+            <a href="{% url 'archive' %}">View all</a>
+        </button>
+    </div>
+    <div class="flex flex-wrap w-full px-4 md:px-2">
+        {% for article in recent_articles %}
+        <div class="md:w-1/3 rounded w-full flex flex-col md:flex-row mb-10">
+            <div class="roundeds px-2">
+                <a href="{{ article.url }}" target="_blank">
+                    <img src="{{ article.image_url }}"
+                        class="block rounded w-full h-64 md:h-auto object-cover object-center" alt="technology" />
+                </a>
+                <div class="p-4 pl-0">
+                    <a href="{{ article.url }}" target="_blank">
+                        <h2 class="font-bold text-2xl text-gray-800">
+                            {{ article.title|truncatechars:80 }}
+                        </h2>
+                    </a>
+                    <div class="flex justify-between mt-2">
+                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100
+                                    text-blue-800 mb-2"> {{ article.source.name }} </span>
+                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-100
+                                    text-gray-600 mb-2 py-1x px-4x">
+                            1d </span>
+                    </div>
+                    <p class="text-gray-700 mt-2">
+                        {{ article.description|truncatechars:200 }}
+                    </p>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+</main>
+<!-- main ends here -->
+
+{% endblock content %}

@@ -60,6 +60,9 @@ cover/
 local_settings.py
 db.sqlite3
 db.sqlite3-journal
+staticfiles/
+*_logs
+
 
 # Flask stuff:
 instance/
@@ -106,6 +109,7 @@ celerybeat.pid
 
 # Environments
 .env
+dev.env
 .venv
 env/
 venv/
@@ -139,5 +143,8 @@ cython_debug/
 
 # misc
 set_env.sh
-*.db
-
+*.db*
+demo.py
+misc
+.vscode
+*sqlite3*
