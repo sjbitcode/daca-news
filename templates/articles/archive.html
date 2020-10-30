@@ -1,16 +1,35 @@
 {% extends 'base.html' %}
 {% block content %}
 
-<h1>Archive</h1>
+
+
 {% if articles %}
-<ul>
-    {% for article in articles %}
-    <li>
-        <a href="{{ article.url }}" target="blank">{{ article.title }} -
-            {{ article.published_at|date:"M d, Y"}}
-        </a>
-    </li>
-    {% endfor %}
-</ul>
+<main class="mt-12 ">
+    <div class="flex mt-16 mb-4 px-4 items-center justify-between">
+        <h2 class="font-bold text-3xl">Archive</h2>
+    </div>
+
+    <div class="flex flex-col">
+        <div class="px-4 space-y-6">
+            {% for article in articles %}
+            <div class="flex flex-wrap items-baseline justify-between border-b border-gray-200
+                        sm:rounded-lg py-4">
+                <div class="flex flex-wrap items-center text-base w-auto md:w-5/6">
+                    <span class="w-full text-gray-700 font-boldx leading-tight mb-2">
+                        <a href="{{ article.url }}" target="_blank">{{ article.title }}</a>
+                    </span>
+                    <span
+                        class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800 mb-2">{{ article.source.name }}</span>
+                </div>
+                <div class="flex text-xs w-auto md:1/6 text-gray-500">{{ article.published_at|date:"Y-m-d"}}</div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</main>
+
+<!-- Pagination -->
+{% include "pagination.html" %}
 {% endif %}
+
 {% endblock content %}

@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% block content %}
+{% load static %}
+<main class="mt-12 ">
+    <div class="mb-16x p-4 flex flex-col md:block md:relative">
+        <img src="{% static 'img/daca_home_is_here.jpg' %}"
+            class="rounded object-cover object-center shadow-lg h-64 md:w-1/3 md:relative md:float-left m-4 mb-0"
+            alt="">
+        <p class="m-4 text-2xl font-bold">
+            Daca News was built on the idea of keeping Dreamers
+            informed about DACA and current events.
+        </p>
+        <p class="m-4">
+            DACA stands for the <span class="font-bold">Deferred Action for Childhood Arrivals</span> program
+            created by President Barack
+            Obama, which has allowed nearly 800,000
+            young people,
+            known as "Dreamers," to avoid deportation and remain in the U.S.
+        </p>
+        <p class="m-4">
+            With so much going on in the world right now, it's proving more difficult to keep up
+            with breaking news and events on a daily basis. Even on its own, the DACA program and immigration
+            reform is a highly debated topic and any new government policies can impact the program and
+            its recipients.
+        </p>
+        <p class="m-4">
+            For a Daca recipient, staying on top of news should be a top priority. Being informed earlier is
+            better. I built this
+            project to collect and store DACA related articles every day. There will be more changes coming
+            soon, as I have yet to roll out new features!
+        </p>
+        <p class="m-4">
+            If you have any comments or feedback, feel free to reach out at <a href="mailto:contact@sangeeta.io"
+                class="text-blue-700">contact@sangeeta.io</a> or visit my site, <a href="https://sangeeta.io"
+                class="text-blue-700">sangeeta.io</a> ✨
+        </p>
+    </div>
+</main>
+<!-- main ends here -->
+
+{% endblock content %}

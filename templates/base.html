@@ -9,25 +9,98 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Daca News - {% block title %}{% endblock %}</title>
     <link rel="stylesheet" href="{% static 'css/tailwind.css' %}">
+    <link rel="stylesheet" href="{% static 'css/hamburgers.min.css' %}">
     <link rel="stylesheet" href="{% static 'css/styles.css' %}">
     {% block styles %}{% endblock %}
 </head>
 
 <body>
     {% block body %}
-    <div id="app" class="antialiased text-gray-800 bg-gray-200" style="min-width: 1280px; min-height: 100vh;">
+    <!-- Main Content -->
+    <div class="max-w-screen-lg mx-auto">
+
+        <!-- Header -->
+        <header class="flex flex-wrap items-center md:justify-between justify-center px-4 mt-10">
+            <div class="flex flex-col">
+                <a href="{% url 'index' %}" class="textpx-2s lg:px-0 font-bold text-6xl">
+                    daca news.
+                </a>
+                <div class="text-base hidden md:block text-gray-500 md:-mt-4 md:ml-3">keeping Dreamers informed</div>
+            </div>
+
+            <ul class="md:inline-flex items-center justify-between">
+                <li class="md:hidden cursor-pointer">
+                    <button class="hamburger hamburger--slider" type="button" id="hamburger">
+                        <span class="hamburger-box">
+                            <span class="hamburger-inner"></span>
+                        </span>
+                    </button>
+                </li>
+                <li class="hidden md:block px-2 md:px-4">
+                    <a href="{% url 'index' %}" class="text-blue-700 font-semibold hover:text-blue-600"> Home
+                    </a>
+                </li>
+                <li class="hidden md:block px-2 md:px-4">
+                    <a href="{% url 'about' %}" class="text-gray-700 font-semibold hover:text-blue-600"> About
+                    </a>
+                </li>
+                <li class="hidden md:block px-2 md:px-4">
+                    <a href="{% url 'archive' %}" class="text-gray-700 font-semibold hover:text-blue-600">
+                        Archive
+                    </a>
+                </li>
+            </ul>
+        </header>
+        <main class="md:hidden hidden items-center" id="sm-nav">
+            <ul class="flex p-4 tracking-wide space-x-3 justify-center">
+                <li>
+                    <a href="" class="text-blue-700 font-semibold hover:text-blue-600"> Home </a>
+                </li>
+                <li>
+                    <a href="" class="text-gray-700 font-semibold hover:text-blue-600"> About </a>
+                </li>
+                <li>
+                    <a href="" class="text-gray-700 font-semibold hover:text-blue-600"> Archive </a>
+                </li>
+            </ul>
+        </main>
+        <!-- header ends here -->
+
+        <!-- Main Page content -->
         {% block content %}{% endblock %}
-        <div class="w-full h-12"></div>
+        <!-- main page content ends here -->
+
+        <!-- Footer -->
+        <footer class="border-t mt-12 pt-12 pb-32 px-4 lg:px-0">
+            <div class="flex flex-wrap justify-between items-center">
+                <div class="md:w-1/2 inline-flex items-baseline">
+                    <div>
+                        <a href="#" class="textpx-2s lg:px-0 font-bold text-4xl text-gray-700">
+                            daca news.
+                        </a>
+                        <br>
+                        <div class="text-xs text-gray-500 -mt-2 ml-2">keeping Dreamers informed</div>
+                    </div>
+                    <span class="ml-2 text-sm text-gray-500">
+                        ©
+                        <script>
+                            new Date().getFullYear() && document.write(new Date().getFullYear());
+                        </script>
+                    </span>
+                </div>
+                <ul class="md:inline-flex items-center justify-between">
+                    <li> <a href="{% url 'index' %}" class="blockx mx-3 text-gray-600 py-2">home</a> </li>
+                    <li> <a href="{% url 'about' %}" class="blockx mx-3 text-gray-600 py-2">about</a> </li>
+                    <li> <a href="{% url 'archive' %}" class="blockx mx-3 text-gray-600 py-2">archive</a> </li>
+                </ul>
+            </div>
+        </footer>
+        <!-- footer ends here -->
     </div>
 
-    <!-- Version and Dev signature -->
-    <div class="fixed bottom-0 left-0 pl-2 pb-2 text-xs text-gray-500">
-        <p>{{ version }}</p>
-        <p>by <a class="text-green-500" href="https://github.com/sjbitcode" target="_blank">@sjbitcode</a></p>
-    </div>
-
-    <script type="text/javascript" src="{% static 'js/app.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/index.js' %}"></script>
     {% block scripts %}{% endblock %}
+
     {% endblock %}
 </body>
 
