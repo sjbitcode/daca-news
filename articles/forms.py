@@ -49,6 +49,11 @@ class ArticleForm(forms.ModelForm):
         description = self.cleaned_data['description']
         return strip_tags_and_format(description)
 
+    def clean_image_url(self):
+        image_url = self.cleaned_data['image_url']
+        # For Bing images
+        return image_url.replace('pid=News', 'pid=')
+
 
 class ApiResponseForm(forms.ModelForm):
     class Meta:
