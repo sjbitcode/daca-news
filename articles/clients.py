@@ -69,6 +69,7 @@ class BaseClient(metaclass=ABCMeta):
                                      params=params)
         # https://github.com/psf/requests/blob/143150233162d609330941ec2aacde5ed4caa510/requests/models.py#L920
         self.response.raise_for_status()
+        logger.info(self.response.headers)
 
     @abstractmethod
     def _fetch_articles(self, params={}):

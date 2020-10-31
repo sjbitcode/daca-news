@@ -111,6 +111,7 @@ class ArticlePipeline:
                 logger.info(f'New Article Check --> {is_new}')
 
                 if is_new:
+                    logger.info(f'New Article url --> {article_dict["url"]}')
                     source = ArticlePipeline.get_source(source_dict)
                     if source:
                         ArticlePipeline.create_article(article_dict, source)
