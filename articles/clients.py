@@ -168,10 +168,7 @@ class NewsApiClient(BaseClient, NewsApiPaginatorMixin):
 class BingClient(BaseClient, BingPaginatorMixin):
     def __init__(self):
         super().__init__()
-        self.base_url = os.path.join(
-            os.environ.get('BING_PROJECT_ENDPOINT'),
-            'bing/v7.0/'
-        )
+        self.base_url = 'https://api.bing.microsoft.com/v7.0'
         self.api_key = os.environ.get('BING_SUBSCRIPTION_KEY')
         self.datetime_format_str = '%Y-%m-%dT%H:%M:%S.0000000Z'
         self.update_headers()
