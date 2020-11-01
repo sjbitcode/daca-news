@@ -18,13 +18,12 @@ def fetch_bing_and_newsapi():
     except Exception as e:
         logger.error(str(e))
 
-    # try:
-    #     news_api_pipeline.fetch_and_save_articles(params=newsapi_default_params)
-    # except Exception as e:
-    #     logger.error(str(e))
+    try:
+        news_api_pipeline.fetch_and_save_articles(params=newsapi_default_params)
+    except Exception as e:
+        logger.error(str(e))
 
 
-# @periodic_task(crontab(minute='1', hour='*/6'))
-@periodic_task(crontab(minute='*/5'))
+@periodic_task(crontab(minute='1', hour='*/1'))
 def perform_fetch_and_store_articles():
     fetch_bing_and_newsapi()
