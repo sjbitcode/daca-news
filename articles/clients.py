@@ -66,7 +66,7 @@ class BaseClient(metaclass=ABCMeta):
         """
         logger.info(f'Fetching {url}')
         self.response = requests.get(url, headers=self.headers,
-                                     params=params)
+                                     params=params, verify=False)
         # https://github.com/psf/requests/blob/143150233162d609330941ec2aacde5ed4caa510/requests/models.py#L920
         self.response.raise_for_status()
         logger.info(self.response.headers)
