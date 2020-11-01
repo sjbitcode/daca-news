@@ -1,3 +1,4 @@
+import datetime
 import json
 import logging
 import os
@@ -54,8 +55,35 @@ if __name__ == '__main__':
 
     # Import other modules.
     from articles.forms import ArticleForm, SourceForm, strip_tags_and_format
-    from articles.clients import *
+    from articles.clients import BingClient, ClientFactory, NewsApiClient
     from articles.actions import ArticlePipeline
+
+    factory = ClientFactory()
+    n = factory.get_client('NewsApi')
+    b = factory.get_client('Bing')
+
+    n_params = {
+        'qintitle': 'daca',
+        'language': 'en',
+        'sortBy': 'publishedAt',
+        'pageSize': 100,
+        'page': 1,
+        'from_param': (datetime.date.today() - datetime.timedelta(days=3)).strftime('%Y-%m-%d'),
+        'to': datetime.date.today().strftime('%Y-%m-%d')
+    }
+
+    b_params = {
+        'q': 'daca',
+        'textFormat': 'HTML',
+        'mkt': 'en-US',
+        'count': 100,
+        'offset': 0,
+        'sortBy': 'Date',
+        'max_pages': 1  # Internal param for pagination
+    }
+
+    np = ArticlePipeline(n)
+    bp = ArticlePipeline(b)
 
     # -------------------------------------------
     # Entrypoint
