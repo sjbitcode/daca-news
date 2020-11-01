@@ -6,10 +6,8 @@ ENV APP_PATH=/app \
 WORKDIR $APP_PATH
 
 # Install system dependencies.
-RUN apk add --no-cache bash
+RUN apk add --no-cache bash tini openssl
 
-# Install tini
-RUN apk add --no-cache tini
 
 # Copy requirements and install.
 COPY requirements.txt .

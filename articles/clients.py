@@ -65,8 +65,7 @@ class BaseClient(metaclass=ABCMeta):
         to fetch articles and store the requests Response object as self.response.
         """
         logger.info(f'Fetching {url}')
-        self.response = requests.get(url, headers=self.headers,
-                                     params=params, verify=False)
+        self.response = requests.get(url, headers=self.headers, params=params)
         # https://github.com/psf/requests/blob/143150233162d609330941ec2aacde5ed4caa510/requests/models.py#L920
         self.response.raise_for_status()
         logger.info(self.response.headers)
