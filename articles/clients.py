@@ -114,9 +114,9 @@ class NewsApiClient(BaseClient, NewsApiPaginatorMixin):
     def __repr__(self):
         return 'NewsApiClient()'
 
-    @property
+    # @property
     def headers(self):
-        return {'X-Api-Key': self.api_key}
+        self.headers = {'X-Api-Key': self.api_key}
 
     def _fetch_articles(self, params):
         """
@@ -181,9 +181,9 @@ class BingClient(BaseClient, BingPaginatorMixin):
     def __repr__(self):
         return 'BingClient()'
 
-    @property
+    # @property
     def headers(self):
-        return {'Ocp-Apim-Subscription-Key': self.api_key}
+        self.headers = {'Ocp-Apim-Subscription-Key': self.api_key}
 
     def _fetch_articles(self, params):
         """
