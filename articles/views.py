@@ -83,17 +83,10 @@ class ArchiveView(ListView):
     model = Article
     template_name = 'articles/archive.html'
     context_object_name = 'articles'
+    paginate_by = 15
 
     def get_distinct_months(self):
         return Article.objects.dates('published_at', 'month', order='DESC')
 
-    def get_articles_by_month(self):
-        pass
-
     def get_queryset(self):
-        return Article.objects.order_by('-published_at')[:10]
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        # add article/date grouping
-        return context
+        return Article.objects.order_by('-published_at')

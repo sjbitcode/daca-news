@@ -26,7 +26,7 @@
                                 text-blue-800 mb-2"> {{ article.source.name }} </span>
                     <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-100
                                 text-gray-600 mb-2 py-1x px-4x">
-                        1d </span>
+                        {{ article.published_at|date:"M j, Y"}} </span>
                 </div>
                 <p class="text-gray-700 mt-2">
                     {{ article.description|truncatechars:200 }}
