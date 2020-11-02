@@ -13,6 +13,12 @@
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"
         integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
     {% block styles %}{% endblock %}
+
+    <style>
+        html {
+            scroll-behavior: smooth;
+        }
+    </style>
 </head>
 
 <body>
@@ -38,7 +44,8 @@
                     </button>
                 </li>
                 <li class="hidden md:block px-2 md:px-4">
-                    <a href="{% url 'index' %}" class="text-blue-700 font-semibold hover:text-blue-600"> Home
+                    <a href="{% url 'index' %}" class="text-gray-700 font-semibold hover:text-blue-600">
+                        Home
                     </a>
                 </li>
                 <li class="hidden md:block px-2 md:px-4">
