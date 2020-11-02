@@ -1,4 +1,4 @@
-from django.views.generic import ListView, TemplateView, View
+from django.views.generic import ListView, TemplateView
 from django.db.models import Count, Q
 
 from .models import Article
@@ -8,20 +8,6 @@ class ArticleListView(ListView):
     model = Article
     template_name = 'articles/index.html'
     context_object_name = 'articles'
-
-    # def get_queryset(self):
-    #     query = self.request.GET.get('q')
-    #     # article_list = Article.objects.filter(
-    #     #     title__icontains='daca').exclude(image_url='').order_by('published_at')[:11]
-    #     article_list = []
-    #     if query:
-    #         article_list = Article.objects.filter(
-    #             Q(title__icontains=query) |
-    #             Q(description__icontains=query) |
-    #             Q(author__contains=query)
-    #         )
-    #         print(f'GOT SOME ARTICLES ----> {len(article_list)}')
-    #     return article_list
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -66,7 +52,6 @@ class SearchView(ListView):
                 Q(description__icontains=query) |
                 Q(author__contains=query)
             ).order_by('-published_at')
-            print(f'GOT SOME ARTICLES ----> {len(article_list)}')
         return article_list
 
     def get_context_data(self, **kwargs):
