@@ -1,6 +1,7 @@
 {% load static %}
 
 <div class="flex flex-wrap pb-4">
+    {% if page_obj %}
     {% for article in page_obj %}
     <div class="w-full md:w-1/3 flex flex-col p-4 lg:pl-0">
 
@@ -17,9 +18,9 @@
             </a>
             <div class="flex justify-between mt-2">
                 <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100
-                                    text-blue-800 mb-2"> {{ article.source.name }} </span>
+                                        text-blue-800 mb-2"> {{ article.source.name }} </span>
                 <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-100
-                                    text-gray-600 mb-2 py-1x px-4x">
+                                        text-gray-600 mb-2 py-1x px-4x">
                     1d </span>
             </div>
             <p class="text-gray-700 mt-2">
@@ -29,6 +30,11 @@
 
     </div>
     {% endfor %}
-
     {% include "pagination.html" with page_obj=page_obj endpoint="search" queried_term=queried_term %}
+
+    {% else %}
+    <div class="p-4">
+        <div class="font-bold text-3xl">No results.</div>
+    </div>
+    {% endif %}
 </div>

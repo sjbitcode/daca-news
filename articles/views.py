@@ -67,7 +67,7 @@ class SearchView(ListView):
                 Q(author__contains=query)
             ).order_by('-published_at')
             print(f'GOT SOME ARTICLES ----> {len(article_list)}')
-        return article_list[:12]
+        return article_list
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
