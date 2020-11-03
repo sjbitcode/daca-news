@@ -1,8 +1,8 @@
 {% load static %}
 
 <div class="flex flex-wrap items-center px-4 justify-between" id="searchbar">
-    <div class="bg-blue-100 flex items-center px-4 rounded cursor-pointer mb-4 w-full">
-        <input class="bg-blue-100 w-full text-gray-700 focus:outline-none" type="text" placeholder="Search"
+    <div class="bg-gray-100 flex items-center px-4 rounded cursor-pointer mb-4 w-full">
+        <input class="bg-gray-100 w-full text-gray-700 focus:outline-none" type="text" placeholder="Search"
             id="dacanews-search" onsearch="fetchArticles()">
 
         <button class="text-blue-500 hover:text-blue-400 focus:outline-none h-10 flex items-center justify-center"
@@ -14,15 +14,16 @@
         </button>
     </div>
 
-    <ul
-        class="md:block flex flex-wrap md:inline-flex items-center md:justify-between justify-center mb-4 md:text-base text-sm">
+    <ul class="md:block flex flex-wrap md:inline-flex items-center md:justify-between justify-center mb-4 md:text-base
+        text-sm text-blue-800">
         {% for source in top_sources %}
         <li class="">
-            <a href="/?q={{ source }}">
-                <button class="px-2 text-xs leading-5 font-semibold rounded-full bg-blue-100
-                                    text-blue-800 mb-2 mr-2">{{ source }}
-                </button>
-            </a>
+
+            <button data-source-name="{{ source }}" class="px-2 text-xs leading-5 font-semibold rounded-full bg-blue-100
+                                     mb-2 mr-2 hover:bg-blue-500 hover:text-gray-100
+                                    focus:outline-none source-button">{{ source }}
+            </button>
+
         </li>
         {% endfor %}
     </ul>

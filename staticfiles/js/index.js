@@ -18,6 +18,8 @@ document.addEventListener('DOMContentLoaded', (e) => {
         smallNav.classList.toggle('hidden')
     })
 
+    addSourceEventListeners()
+
     if (searchInput) {
         // When Enter is hit on search bar, trigger the onclick function from searchButton
         searchInput.addEventListener('keyup', (e) => {
@@ -28,6 +30,17 @@ document.addEventListener('DOMContentLoaded', (e) => {
         })
     }
 });
+
+// Add listeners to the query copy buttons.
+const addSourceEventListeners = () => {
+  document.querySelectorAll('.source-button').forEach((item, i) => {
+    item.addEventListener('click', () => {
+        item.classList.toggle('bg-blue-500');
+        item.classList.toggle('text-white');
+        item.classList.toggle('source-selected');
+    });
+  });
+};
 
 
 // ------------------------------------------------------------------
@@ -99,10 +112,35 @@ const makeRequest = async (url) => {
     return await response.text()
 }
 
+// Create URI encoded string of sources selected for search
+const getSelectedSources = () => {
+    const selectedSources = document.querySelectorAll('.source-button.source-selected')
 
-// Make search request
+    if (!selectedSources.length) {
+        return false
+    }
+
+    let sources = []
+    selectedSources.forEach((item, i) => {
+        sources.push(`source=${encodeURI(item.innerText)}`)
+    })
+    return sources.join('&')
+}
+
+
+// Make search request with selected sources and input value
 const searchAction = () => {
-    const url = `${document.location.origin}/search?q=${searchInput.value}`
+    const query = searchInput.value
+    const sources = getSelectedSources()
+
+    if (!query && !sources) {
+        return
+    }
+
+    let url = `${document.location.origin}/search?q=${encodeURI(searchInput.value)}`
+    if (sources) {
+        url += `&${sources}`
+    }
 
     makeRequest(url).then(articles => {
         clearFeaturedAndRecentArticles()
