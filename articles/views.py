@@ -23,7 +23,7 @@ class ArticleListView(ListView):
         # Get recent articles, exclude ids from featured articles
         id_exclude_list = [article.id for article in featured_articles]
         recent_articles = Article.objects.select_related('source').filter(
-            ~empty_image_url & ~Q(id__in=id_exclude_list)).order_by('-published_at')[:6]
+            ~empty_image_url & ~Q(id__in=id_exclude_list)).order_by('-published_at')[:12]
 
         # Get top 10 news sources
         source_article_groupby = Article.objects.values(
@@ -41,18 +41,32 @@ class SearchView(ListView):
     model = Article
     template_name = 'articles/article_search.html'
     context_object_name = 'articles'
-    paginate_by = 6
+    paginate_by = 12
 
     def get_queryset(self):
         query = self.request.GET.get('q')
-        article_list = []
+        sources = self.request.GET.getlist('source')
+
+        # Compile query Q objects with default
+        query_filters = Q()
         if query:
-            article_list = Article.objects.filter(
+            query_filters = (
                 Q(title__icontains=query) |
                 Q(description__icontains=query) |
                 Q(author__contains=query)
-            ).order_by('-published_at')
-        return article_list
+            )
+
+        # Compile source Q objects with default
+        sources_filters = Q()
+        if sources:
+            sources_filters = Q(source__name__in=sources)
+
+        return (
+            Article
+            .objects
+            .filter(query_filters & sources_filters)
+            .order_by('-published_at')
+        )
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

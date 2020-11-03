@@ -9,7 +9,7 @@
                     class="rounded-md object-cover object-center w-full h-64 shadow-lg">
             </a>
             <h1 class="text-gray-800 text-4xl font-bold mt-2 mb-4 leading-tight">
-                <a href="{{ lead_article.url }}" target="_blank">{{ lead_article.title|truncatechars:60 }}</a>
+                <a href="{{ lead_article.url }}" target="_blank">{{ lead_article.title }}</a>
             </h1>
             <div class="flex justify-between">
                 <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100
@@ -35,7 +35,7 @@
                     <a href="{{ article.url }}" target="_blank">
                         <div
                             class="md:mt-0 text-gray-800 text-lg mb-2 font-bold text-2xl md:mt-0 md:font-semibold md:text-lg">
-                            {{ article.title|truncatechars:50 }}
+                            {{ article.title|truncatechars:70 }}
                         </div>
                     </a>
                     <div class="flex flex-wrap justify-between">
