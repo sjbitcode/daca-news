@@ -53,7 +53,9 @@ MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.cache.UpdateCacheMiddleware',
     'django.middleware.common.CommonMiddleware',
+    'django.middleware.cache.FetchFromCacheMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
@@ -203,3 +205,11 @@ SENTRY_DSN = os.environ.get('SENTRY_DSN')
 
 if SENTRY_DSN and SENTRY_DSN != 'sentry-key':
     sentry_sdk.init(dsn=SENTRY_DSN, integrations=[DjangoIntegration()])
+
+
+# Caching Settings
+# https://docs.djangoproject.com/en/3.1/topics/cache/#the-per-site-cache
+CACHE_MIDDLEWARE_ALIAS = 'default'  # which cache alias to use
+CACHE_MIDDLEWARE_SECONDS = '3000'    # number of seconds to cache a page for (TTL)
+# should be used if the cache is shared across multiple sites that use the same Django instance
+CACHE_MIDDLEWARE_KEY_PREFIX = ''
