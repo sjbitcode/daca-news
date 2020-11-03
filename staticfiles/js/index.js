@@ -104,7 +104,7 @@ const updateSearchResultsDiv = (html, divId) => {
 
 // Utility function for making requests
 const makeRequest = async (url) => {
-    console.log(`Making request to ${url}`)
+    // console.log(`Making request to ${url}`)
     const response = await fetch(url)
     if (!response.ok) {
         throw new Error(`Cannot request ${url}, got ${response.status}`)
@@ -153,7 +153,12 @@ const searchAction = () => {
 
 // Make AJAX paginated request
 const fetchPaginated = async (el) => {
-    const url = `${document.location.origin}/${el.getAttribute('data-pagination-url')}`
+    const sources = getSelectedSources()
+
+    let url = `${document.location.origin}/${el.getAttribute('data-pagination-url')}`
+    if (sources) {
+        url += `&${sources}`
+    }
 
     makeRequest(url).then(articles => {
         clearFeaturedAndRecentArticles()

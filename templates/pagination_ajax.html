@@ -41,7 +41,6 @@
         <div>
             <nav class="relative z-0 inline-flex shadow-sm">
                 <button data-pagination-url="{{ endpoint }}?q={{ queried_term }}&page=1" onClick="fetchPaginated(this)"
-                    href="?page=1"
                     class="relative inline-flex items-center px-2 py-2 rounded-l-md border border-r-0 border-gray-300 bg-white text-sm leading-5 font-medium text-gray-500 hover:text-gray-400 focus:z-10 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:bg-gray-100 active:text-gray-500 transition ease-in-out duration-150"
                     aria-label="Previous">
                     <!-- Heroicon name: chevron-double-left -->
@@ -54,7 +53,7 @@
                 {% if page_obj.has_previous %}
                 <button
                     data-pagination-url="{{ endpoint }}?q={{ queried_term }}&page={{ page_obj.previous_page_number }}"
-                    onClick="fetchPaginated(this)" href="?page={{ page_obj.previous_page_number }}"
+                    onClick="fetchPaginated(this)"
                     class="relative inline-flex items-center px-2 py-2 rounded-l-mds border border-gray-300 bg-white text-sm leading-5 font-medium text-gray-500 hover:text-gray-400 focus:z-10 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:bg-gray-100 active:text-gray-500 transition ease-in-out duration-150"
                     aria-label="Previous">
                     <!-- Heroicon name: chevron-left -->
@@ -65,7 +64,7 @@
                     </svg>
                 </button>
                 {% else %}
-                <button href="#"
+                <button
                     class="relative inline-flex items-center px-2 py-2 rounded-l-mds border border-gray-300 bg-white text-sm leading-5 font-medium text-gray-400 hover:text-gray-400x focus:z-10 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:bg-gray-100 active:text-gray-500 transition ease-in-out duration-150 disabled"
                     aria-label="Previous">
                     <!-- Heroicon name: chevron-left -->
@@ -81,13 +80,13 @@
                 {% for i in page_obj.paginator.page_range %}
                 {% if page_obj.number == i %}
                 <button data-pagination-url="{{ endpoint }}?q={{ queried_term }}&page={{ i }}"
-                    onClick="fetchPaginated(this)" href="?page={{ i }}"
+                    onClick="fetchPaginated(this)"
                     class="-ml-px relative inline-flex items-center px-4 py-2 border border-gray-300 bg-gray-300 text-sm leading-5 font-medium text-gray-700 hover:text-gray-500 focus:z-10 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:bg-gray-100 active:text-gray-700 transition ease-in-out duration-150">
                     {{ page_obj.number }}
                 </button>
                 {% elif i > page_obj.number|add:'-3' and i < page_obj.number|add:'3' %}
                 <button data-pagination-url="{{ endpoint }}?q={{ queried_term }}&page={{ i }}"
-                    onClick="fetchPaginated(this)" href="?page={{ i }}"
+                    onClick="fetchPaginated(this)"
                     class="hidden md:inline-flex -ml-px relative items-center px-4 py-2 border border-gray-300 bg-white text-sm leading-5 font-medium text-gray-700 hover:text-gray-500 focus:z-10 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:bg-gray-100 active:text-gray-700 transition ease-in-out duration-150">
                     {{ i }}
                 </button>
@@ -96,7 +95,7 @@
 
                 {% if page_obj.has_next %}
                 <button data-pagination-url="{{ endpoint }}?q={{ queried_term }}&page={{ page_obj.next_page_number }}"
-                    onClick="fetchPaginated(this)" href="?page={{ page_obj.next_page_number }}"
+                    onClick="fetchPaginated(this)"
                     class="-ml-px relative inline-flex items-center px-2 py-2 rounded-r-mdx border border-gray-300 bg-white text-sm leading-5 font-medium text-gray-500 hover:text-gray-400 focus:z-10 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:bg-gray-100 active:text-gray-500 transition ease-in-out duration-150"
                     aria-label="Next">
                     <!-- Heroicon name: chevron-right -->
@@ -107,7 +106,7 @@
                     </svg>
                 </button>
                 {% else %}
-                <button href="#"
+                <button
                     class="-ml-px relative inline-flex items-center px-2 py-2 rounded-r-mdx border border-gray-300 text-sm leading-5 font-medium text-gray-400 hover:text-gray-400 focus:z-10 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:bg-gray-100 active:text-gray-500 transition ease-in-out duration-150 disabled"
                     aria-label="Next">
                     <!-- Heroicon name: chevron-right -->
@@ -120,10 +119,10 @@
                 {% endif %}
                 <button
                     data-pagination-url="{{ endpoint }}?q={{ queried_term }}&page={{ page_obj.paginator.num_pages }}"
-                    onClick="fetchPaginated(this)" href="?page={{ page_obj.paginator.num_pages }}"
+                    onClick="fetchPaginated(this)"
                     class="-ml-px relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm leading-5 font-medium text-gray-500 hover:text-gray-400 focus:z-10 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:bg-gray-100 active:text-gray-500 transition ease-in-out duration-150"
                     aria-label="Last">
-                    <!-- Heroicon name: chevron-right -->
+                    <!-- Heroicon name: chevron-double-right -->
                     <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
                         <path fill-rule="evenodd"
                             d="M10.293 15.707a1 1 0 010-1.414L14.586 10l-4.293-4.293a1 1 0 111.414-1.414l5 5a1 1 0 010 1.414l-5 5a1 1 0 01-1.414 0z"

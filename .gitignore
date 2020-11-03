@@ -147,6 +147,7 @@ set_env.sh
 demo.py
 misc
 .vscode
+*.code-workspace
 *sqlite3*
 static
 staticfiles/css/tailwind*
