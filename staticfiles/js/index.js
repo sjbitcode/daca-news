@@ -137,7 +137,7 @@ const searchAction = () => {
         return
     }
 
-    let url = `${document.location.origin}/search?q=${encodeURI(searchInput.value)}`
+    let url = `${document.location.origin}/search/?q=${encodeURI(searchInput.value)}`
     if (sources) {
         url += `&${sources}`
     }
