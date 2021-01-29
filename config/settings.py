@@ -31,6 +31,9 @@ DEBUG = os.environ.get('DEBUG', 'False') == 'True'
 
 ALLOWED_HOSTS = ['*']
 
+# Custom env variable to display the site.
+SITE_URL = os.environ.get('SITE_URL')
+
 
 # Application definition
 
