@@ -24,6 +24,6 @@ def fetch_bing_and_newsapi():
         logger.error(str(e))
 
 
-@periodic_task(crontab(minute='1', hour='*/1'))
+@periodic_task(crontab(minute='1', hour='*/6'))
 def perform_fetch_and_store_articles():
     fetch_bing_and_newsapi()
