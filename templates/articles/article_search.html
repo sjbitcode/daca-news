@@ -1,4 +1,5 @@
 {% load static %}
+{% load text_utils %}
 
 <div class="flex flex-wrap pb-4">
     {% if page_obj %}
@@ -13,7 +14,7 @@
         <div class=" p-4 pl-0">
             <a href="{{ article.url }}" target="_blank">
                 <h2 class="font-bold text-2xl text-gray-800">
-                    {{ article.title|truncatechars:60 }}
+                    {% truncate_in_middle article.title 70 %}
                 </h2>
             </a>
             <div class="flex flex-wrap justify-between mt-2">
