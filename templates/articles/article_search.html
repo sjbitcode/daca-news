@@ -6,8 +6,8 @@
     {% for article in page_obj %}
     <div class="w-full md:w-1/3 flex flex-col p-4 lg:pl-0">
 
-        <a href="{{ article.url }}" target="_blank">
-            <img src="{{ article.image_url }}" class="block rounded w-full h-64 object-cover object-center"
+        <a href="{{ article.url }}" target="_blank" title="{{ article.title }}" class="overflow-hidden cursor-pointer h-64 shadow-md">
+            <img src="{{ article.image_url }}" class="block rounded w-full h-full object-cover object-center transition transform duration-500 ease-in-out hover:transition hover:scale-110"
                 alt="some image"
                 onerror="this.src='https://via.placeholder.com/500X280/000000/ffffff?text=dacanews';" />
         </a>
