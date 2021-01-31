@@ -1,4 +1,5 @@
 {% load static %}
+{% load text_utils %}
 
 <div id="featured-articles">
     <div class="flex flex-wrap md:flex-no-wrap space-x-0 md:space-x-6 mb-16x">
@@ -35,7 +36,7 @@
                     <a href="{{ article.url }}" target="_blank">
                         <div
                             class="md:mt-0 text-gray-800 text-lg mb-2 font-bold text-2xl md:mt-0 md:font-semibold md:text-lg">
-                            {{ article.title|truncatechars:70 }}
+                            {% truncate_in_middle article.title 70 %}
                         </div>
                     </a>
                     <div class="flex flex-wrap justify-between">
