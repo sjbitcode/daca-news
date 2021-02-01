@@ -33,12 +33,8 @@ document.addEventListener('DOMContentLoaded', (e) => {
 
 // Add listeners to the query copy buttons.
 const addSourceEventListeners = () => {
-  document.querySelectorAll('.source-button').forEach((item, i) => {
-    item.addEventListener('click', () => {
-        item.classList.toggle('bg-blue-500');
-        item.classList.toggle('text-white');
-        item.classList.toggle('source-selected');
-    });
+  document.querySelectorAll('.source-button').forEach(button => {
+    button.addEventListener('click', searchSource)
   });
 };
 
@@ -47,7 +43,7 @@ const addSourceEventListeners = () => {
 // Utils / Helper functions
 // ------------------------------------------------------------------
 
-// Apply active styles on the current page nav link 
+// Apply active styles on the current page nav link
 const setActivePageLink = () => {
 
     const url = document.location.pathname;
@@ -112,35 +108,28 @@ const makeRequest = async (url) => {
     return await response.text()
 }
 
-// Create URI encoded string of sources selected for search
-const getSelectedSources = () => {
-    const selectedSources = document.querySelectorAll('.source-button.source-selected')
 
-    if (!selectedSources.length) {
-        return false
-    }
-
-    let sources = []
-    selectedSources.forEach((item, i) => {
-        sources.push(`source=${encodeURI(item.innerText)}`)
+const searchSource = (event) => {
+    const button = event.currentTarget;
+    const source = button.dataset.sourceName;
+    const url = `${document.location.origin}/search/?source=${encodeURI(source)}`
+    makeRequest(url).then(articles => {
+        clearFeaturedAndRecentArticles()
+        updateSearchResultsDiv(articles, 'search-results')
     })
-    return sources.join('&')
+    .catch(e => alert(e.message))
 }
 
 
 // Make search request with selected sources and input value
 const searchAction = () => {
     const query = searchInput.value
-    const sources = getSelectedSources()
 
-    if (!query && !sources) {
+    if (!query) {
         return
     }
 
     let url = `${document.location.origin}/search/?q=${encodeURI(searchInput.value)}`
-    if (sources) {
-        url += `&${sources}`
-    }
 
     makeRequest(url).then(articles => {
         clearFeaturedAndRecentArticles()
