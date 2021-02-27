@@ -11,31 +11,20 @@
     <div class="flex flex-col">
         <div class="px-4 space-y-6" id="search-results">
             {% for article in articles %}
-            <div class="flex flex-wrap items-center justify-between border-b border-gray-200
-                        sm:rounded-lg py-4">
-
-                <div class="flex items-center text-base w-auto md:w-5/6">
-                    <a class="h-20 w-20 overflow-hidden" href="{{ article.url }}" target="_blank">
-                        <img src="{{ article.image_url }}" class="block shadow-md rounded-md
-                                    md:m-0 object-cover object-center h-full w-full"
-                            onerror="this.src='https://via.placeholder.com/500X280/000000/ffffff?text=dacanews';" />
-                    </a>
-                    <div class="flex flex-wrap ml-4 sm:justify-between w-2/3">
-                        <span class="w-full text-gray-700 font-boldx leading-tight mb-2 px-2">
+            <div class="items-center justify-between sm:rounded-lg">
+                <div class="flex items-center text-base w-auto xmd:w-5/6">
+                    <div class="">
+                        <span class="text-gray-600 leading-tight mb-2">
                             <a href="{{ article.url }}" target="_blank">{{ article.title }}</a>
                         </span>
-                        <div class="w-full">
-                            <span
-                                class="px-2 inline-flexd text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800 mb-2">{{ article.source.name }}</span>
-                        </div>
-                        <span class="md:hidden text-xs text-gray-500 w-full px-2 mt-2">
-                            {{ article.published_at|date:"M j, Y"}}
-                        </span>
+                        <span class="px-2 text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800 mx-2 mb-2">{{ article.source.name }}</span>
                     </div>
                 </div>
-
-                <div class="hidden md:block flex text-xs w-auto md:1/6 text-gray-500">
-                    {{ article.published_at|date:"M j, Y"}}</div>
+                <div class="">
+                    <p class="text-xs text-gray-500 xw-full xpx-2 xmt-2 w-full">
+                        {{ article.published_at|date:"M j, Y"}}
+                    </p>
+                </div>
             </div>
             {% endfor %}
         </div>
