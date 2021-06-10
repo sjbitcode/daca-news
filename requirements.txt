@@ -1,7 +1,7 @@
 asgiref==3.2.10
 certifi==2020.6.20
 chardet==3.0.4
-Django==3.1.2
+Django==3.1.12
 huey==2.2.0
 idna==2.10
 isort==5.6.4
